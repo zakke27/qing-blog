@@ -1,0 +1,36 @@
+.navbar {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  // background-color: #f0f2f5;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .logo {
+    width: 140px;
+    height: 31px;
+    line-height: 31px;
+    text-align: center;
+    color: black;
+    border-radius: 10px;
+    font-size: large;
+    margin: 16px 24px 16px 0;
+    background-color: white;
+    img {
+      width: 40px;
+      height: 40px;
+      line-height: 31px;
+    }
+  }
+  .ant-menu-item {
+    height: 40px;
+    line-height: 40px;
+    background-color: white;
+  }
+
+  .avatar {
+    border-radius: 5px;
+  }
+}
