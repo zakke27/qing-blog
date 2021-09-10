@@ -5,8 +5,9 @@ import { Layout, Input, Menu, Avatar, Dropdown, Button } from 'antd'
 import { UserOutlined, SettingOutlined, PoweroffOutlined } from '@ant-design/icons'
 import { Link, useHistory } from 'react-router-dom'
 import { getToken, removeToken } from '../../utils/Auth'
+import PropTypes from 'prop-types'
 
-const NavBar = () => {
+const NavBar = ({ showLoginModal }) => {
   let history = useHistory()
 
   const { Header } = Layout
@@ -18,20 +19,15 @@ const NavBar = () => {
 
   const logout = () => {
     removeToken()
-    history.push('/')
+    history.replace('/')
   }
   return (
     <Header className="navbar">
       <div className="logo">
         <img src={logo} className="logo-img" alt="logo" />
-        <span>社区</span>
+        <span>Just Write</span>
       </div>
-      <Menu
-        mode="horizontal"
-        inlineCollapsed={false}
-        defaultSelectedKeys={'1'}
-        style={{ margin: '0 10px' }}
-      >
+      <Menu mode="horizontal" defaultSelectedKeys={'1'} style={{ margin: '0 10px' }}>
         <Menu.Item key="1">
           <Link to="/">首页</Link>
         </Menu.Item>
@@ -49,10 +45,9 @@ const NavBar = () => {
         onSearch={onSearch}
         style={{ width: '30%' }}
       />
-      <nav style={{ margin: '0 10px 0 30px' }}>
-        <Button type="primary">撰写</Button>
-        <Button shape="round" icon={<SettingOutlined />} style={{ margin: '0 20px' }}></Button>
-      </nav>
+      <Button type="primary" style={{ margin: '0 20px' }}>
+        撰写
+      </Button>
       {getToken() ? (
         <Dropdown
           trigger={['click']}
@@ -77,12 +72,20 @@ const NavBar = () => {
           />
         </Dropdown>
       ) : (
-        <Button type="default" style={{ color: '#1890ff', borderColor: '#1890ff' }}>
+        <Button
+          type="default"
+          onClick={showLoginModal(true)}
+          style={{ color: '#1890ff', borderColor: '#1890ff' }}
+        >
           登录
         </Button>
       )}
     </Header>
   )
+}
+
+NavBar.propTypes = {
+  showLoginModal: PropTypes.func
 }
 
 export default NavBar

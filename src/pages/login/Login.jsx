@@ -1,75 +1,87 @@
 import React from 'react'
 import './Login.scss'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import { setToken } from '../../utils/Auth'
+import * as userApi from '../../api/user'
+import PropTypes from 'prop-types'
 
-const Login = () => {
+const Login = ({ setIsLoginModal }) => {
   let history = useHistory()
-  const token = Math.random()
-  const onFinish = values => {
-    console.log('Received values of form: ', values)
-    if (values.username === 'zakke' && values.password === '123456') {
-      setToken(token)
-      history.push('/')
-    }
+
+  // login
+  const handleLogin = userInfo => {
+    userApi
+      .userLogin(userInfo)
+      .then(res => {
+        // console.log(res)
+        if (res.data.code === 200) {
+          setToken()
+          history.replace('/')
+          message.success('登录成功', 3)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  // login failed
+  const handleLoginFailed = error => {
+    console.log('登录失败', error)
   }
   return (
-    <div className="wrap">
-      <Form
-        name="normal_login"
-        className="login-form"
-        initialValues={{
-          remember: true
-        }}
-        onFinish={onFinish}
+    <Form
+      size="large"
+      name="normal_login"
+      className="login-form"
+      preserve={false}
+      onFinish={handleLogin}
+      onFinishFailed={handleLoginFailed}
+    >
+      <Form.Item
+        name="username"
+        label="账号"
+        rules={[
+          { required: true, message: '请输入你的账户！' },
+          { min: 3, max: 12, message: '长度在3-12个字符' }
+        ]}
       >
-        <Form.Item
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your Username!'
-            }
-          ]}
-        >
-          <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your Password!'
-            }
-          ]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Item>
-        <Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-
-          <a className="login-form-forgot" href="">
-            Forgot password
+        <Input prefix={<UserOutlined />} placeholder="Username" />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        label="密码"
+        rules={[{ required: true, message: '请输入你的密码！' }]}
+      >
+        <Input.Password
+          prefix={<LockOutlined className="site-form-item-icon" />}
+          type="password"
+          placeholder="Password"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" className="login-form-button">
+          登录
+        </Button>
+        <div style={{ marginTop: '1rem' }}>
+          没有账户？
+          <a
+            onClick={() => {
+              setIsLoginModal(false)
+            }}
+          >
+            现在注册！
           </a>
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-form-button">
-            Log in
-          </Button>
-          Or <a href="">register now!</a>
-        </Form.Item>
-      </Form>
-    </div>
+        </div>
+      </Form.Item>
+    </Form>
   )
+}
+
+Login.propTypes = {
+  setIsLoginModal: PropTypes.func
 }
 
 export default Login

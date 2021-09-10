@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 const NotFound = () => {
   let history = useHistory()
   const goBackHome = () => {
-    history.push('/')
+    history.replace('/')
   }
   return (
     <div className="notfound">

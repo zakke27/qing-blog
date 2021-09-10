@@ -9,19 +9,23 @@
   align-items: center;
   justify-content: center;
   .logo {
+    display: flex;
     width: 140px;
     height: 31px;
-    line-height: 31px;
-    text-align: center;
+    // line-height: 31px;
+    justify-content: center;
+    align-items: center;
     color: black;
+    border: 1px solid #f0f2f5;
     border-radius: 10px;
     font-size: large;
     margin: 16px 24px 16px 0;
     background-color: white;
     img {
+      display: block;
       width: 40px;
       height: 40px;
-      line-height: 31px;
+      // line-height: 40px;
     }
   }
   .ant-menu-item {

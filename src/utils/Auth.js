@@ -1,16 +1,16 @@
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 // 存放 token
 export const setToken = token => {
-  Cookies.set('token', token)
+  localStorage.setItem('token', token)
 }
 
 // 获取 token
 export const getToken = () => {
-  return Cookies.get('token')
+  return localStorage.getItem('token')
 }
 
 // 移除 token
 export const removeToken = () => {
-  Cookies.remove('token')
+  localStorage.removeItem('token')
 }
