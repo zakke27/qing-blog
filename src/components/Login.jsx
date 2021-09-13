@@ -1,25 +1,26 @@
-import React from 'react'
-import './Login.scss'
+/** @jsx jsx **/
+import { css, jsx } from '@emotion/react'
 import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { useHistory } from 'react-router-dom'
-import { setToken } from '../../utils/Auth'
-import * as userApi from '../../api/user'
+// import { useHistory } from 'react-router-dom'
+import * as userApi from '../api/user'
 import PropTypes from 'prop-types'
+import { setUser, setToken } from '../utils/Auth'
 
-const Login = ({ setIsLoginModal }) => {
-  let history = useHistory()
-
+const Login = props => {
+  const { changeModalTitle, showModal } = props
+  // let history = useHistory()
   // login
   const handleLogin = userInfo => {
     userApi
       .userLogin(userInfo)
       .then(res => {
-        // console.log(res)
+        console.log(res)
         if (res.data.code === 200) {
-          setToken()
-          history.replace('/')
-          message.success('登录成功', 3)
+          setUser(res.data.userInfo)
+          setToken(res.data.userInfo.token)
+          showModal()
+          message.success('登录成功', 2)
         }
       })
       .catch(err => {
@@ -62,18 +63,18 @@ const Login = ({ setIsLoginModal }) => {
         />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button">
+        <Button
+          type="primary"
+          htmlType="submit"
+          css={css`
+            width: 100%;
+          `}
+        >
           登录
         </Button>
         <div style={{ marginTop: '1rem' }}>
           没有账户？
-          <a
-            onClick={() => {
-              setIsLoginModal(false)
-            }}
-          >
-            现在注册！
-          </a>
+          <a onClick={changeModalTitle('注册')}>现在注册！</a>
         </div>
       </Form.Item>
     </Form>
@@ -81,7 +82,8 @@ const Login = ({ setIsLoginModal }) => {
 }
 
 Login.propTypes = {
-  setIsLoginModal: PropTypes.func
+  changeModalTitle: PropTypes.func,
+  showModal: PropTypes.func
 }
 
 export default Login

@@ -1,19 +1,19 @@
 {
-  "name": "qing-liao",
+  "name": "qing-blog",
   "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.jsx src --fix"
   },
-  "license": "MIT",
   "dependencies": {
-    "@uiw/react-md-editor": "^3.6.1",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@uiw/react-md-editor": "^3.6.2",
     "antd": "^4.16.13",
     "axios": "^0.21.4",
-    "js-cookie": "^3.0.1",
-    "mockjs": "^1.1.0",
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
     "react": "^17.0.0",
@@ -21,14 +21,18 @@
     "react-router-dom": "^5.3.0"
   },
   "devDependencies": {
+    "@emotion/eslint-plugin": "^11.2.0",
     "@vitejs/plugin-react-refresh": "^1.3.1",
+    "assert": "^2.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.25.1",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "mockjs": "^1.1.0",
     "prettier": "^2.4.0",
-    "sass": "^1.39.0",
+    "process": "^0.11.10",
+    "rollup-plugin-visualizer": "^5.5.2",
     "vite": "^2.5.4"
   }
 }

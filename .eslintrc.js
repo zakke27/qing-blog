@@ -22,11 +22,14 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  plugins: ['prettier'],
+  plugins: ['prettier', '@emotion'],
   rules: {
     'prettier/prettier': 'warn',
     'react/prop-types': 'warn',
     'arrow-body-style': 'off',
-    'prefer-arrow-callback': 'off'
+    'prefer-arrow-callback': 'off',
+    '@emotion/jsx-import': 'error',
+    '@emotion/pkg-renaming': 'error',
+    'react/jsx-uses-react': 2
   }
 }

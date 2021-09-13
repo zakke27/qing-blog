@@ -1,5 +1,9 @@
 @import 'antd/dist/antd.css';
 
+body {
+  background: #f0f2f5;
+}
+
 * {
   margin: 0;
   padding: 0;

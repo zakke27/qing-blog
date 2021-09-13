@@ -1,10 +1,12 @@
-import React from 'react'
+/** @jsx jsx **/
+import { css, jsx } from '@emotion/react'
 import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import PropTypes from 'prop-types'
-import * as userApi from '../../api/user'
+import * as userApi from '../api/user'
 
-const Register = ({ setIsLoginModal }) => {
+const Register = props => {
+  const { changeModalTitle } = props
   // register
   const handleRegister = userInfo => {
     const { username, password } = userInfo
@@ -88,20 +90,15 @@ const Register = ({ setIsLoginModal }) => {
         <Button
           type="primary"
           htmlType="submit"
-          className="register-form-button"
-          style={{ width: '100%' }}
+          css={css`
+            width: 100%;
+          `}
         >
           注册
         </Button>
         <div style={{ marginTop: '1rem' }}>
           已有账户?
-          <a
-            onClick={() => {
-              setIsLoginModal(true)
-            }}
-          >
-            现在登录！
-          </a>
+          <a onClick={changeModalTitle('登录')}>现在登录！</a>
         </div>
       </Form.Item>
     </Form>
@@ -109,7 +106,7 @@ const Register = ({ setIsLoginModal }) => {
 }
 
 Register.propTypes = {
-  setIsLoginModal: PropTypes.func
+  changeModalTitle: PropTypes.func
 }
 
 export default Register
