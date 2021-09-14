@@ -2,10 +2,10 @@
 import { css, jsx } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Layout, Input, Menu, Avatar, Dropdown, Button } from 'antd'
-import { SettingOutlined, PoweroffOutlined } from '@ant-design/icons'
-import { Link, useHistory } from 'react-router-dom'
+import { SettingOutlined, PoweroffOutlined, ReadOutlined } from '@ant-design/icons'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { getUser, getToken, removeAll } from '../utils/Auth'
+import { getUser, getToken, removeAll } from '../../utils/Auth'
 
 const Span = styled.span`
   margin-left: 10px;
@@ -15,6 +15,7 @@ const NavBar = props => {
   const { Header } = Layout
   const { Search } = Input
   let history = useHistory()
+  let location = useLocation()
 
   // props
   const { showModal } = props
@@ -33,10 +34,15 @@ const NavBar = props => {
     }
   }
 
+  // 管理博客
+  const manageBlog = () => {
+    // history.push()
+  }
+
   // 退出登录
   const logout = () => {
     removeAll()
-    location.reload()
+    window.location.reload()
   }
 
   return (
@@ -59,6 +65,7 @@ const NavBar = props => {
           /* background-color: green; */
           display: flex;
           justify-content: space-between;
+          align-items: center;
         `}
       >
         <div className="logo">轻 blog</div>
@@ -66,25 +73,22 @@ const NavBar = props => {
           css={css`
             display: flex;
             align-items: center;
-            background-color: white;
+            /* background-color: white; */
           `}
         >
           <li
             css={css`
-              margin: 0 10px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
+              margin: 1px 10px;
             `}
           >
-            <Menu mode="horizontal" theme="light">
-              <Menu.Item key="1" className="菜单111">
+            <Menu mode="horizontal" theme="light" selectedKeys={[location.pathname]} css={css``}>
+              <Menu.Item key="/">
                 <Link to="/">首页</Link>
               </Menu.Item>
-              <Menu.Item key="2">
+              <Menu.Item key="/hot">
                 <Link to="/hot">热门</Link>
               </Menu.Item>
-              <Menu.Item key="3">
+              <Menu.Item key="/history">
                 <Link to="/history">历史</Link>
               </Menu.Item>
             </Menu>
@@ -112,8 +116,10 @@ const NavBar = props => {
                   overlay={
                     <Menu>
                       <Menu.Item key="1">
-                        <SettingOutlined />
-                        <Span>文章管理</Span>
+                        <Link to="/admin">
+                          <ReadOutlined />
+                          <Span>文章管理</Span>
+                        </Link>
                       </Menu.Item>
                       <Menu.Item key="2">
                         <SettingOutlined />

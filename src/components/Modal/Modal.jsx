@@ -1,11 +1,9 @@
 import React, { Suspense, lazy, useState } from 'react'
 import { Modal as AntdModal } from 'antd'
 import PropTypes from 'prop-types'
-// import Loading from './Loading'
-// import Login from './Login'
-// import Register from './Register'
-const Login = lazy(() => import('./Login'))
-const Register = lazy(() => import('./Register'))
+
+const Login = lazy(() => import('../Login/Login'))
+const Register = lazy(() => import('../Register/Register'))
 
 const Modal = props => {
   const { modalVisible, showModal } = props

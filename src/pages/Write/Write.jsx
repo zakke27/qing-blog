@@ -5,7 +5,7 @@ import MDEditor from '@uiw/react-md-editor'
 import { Input, Button } from 'antd'
 
 // custom hook   change page title
-import useTitle from '../hooks/useTitle'
+import useTitle from '../../hooks/useTitle'
 
 const Write = () => {
   const [value, setValue] = useState('**Hello World!**')

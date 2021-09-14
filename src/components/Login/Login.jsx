@@ -3,9 +3,9 @@ import { css, jsx } from '@emotion/react'
 import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 // import { useHistory } from 'react-router-dom'
-import * as userApi from '../api/user'
+import * as userApi from '../../api/user'
 import PropTypes from 'prop-types'
-import { setUser, setToken } from '../utils/Auth'
+import { setUser, setToken } from '../../utils/Auth'
 
 const Login = props => {
   const { changeModalTitle, showModal } = props

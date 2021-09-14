@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/react'
 import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import PropTypes from 'prop-types'
-import * as userApi from '../api/user'
+import * as userApi from '../../api/user'
 
 const Register = props => {
   const { changeModalTitle } = props

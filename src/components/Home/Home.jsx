@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react'
 import { Skeleton, Card, Avatar } from 'antd'
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
-import * as blogApi from '../api/blog'
+import * as blogApi from '../../api/blog'
 
 const Home = () => {
   let history = useHistory()
+
   const { Meta } = Card
   const [blogList, setBlogList] = useState([])
 
