@@ -53,7 +53,10 @@ const Register = props => {
       <Form.Item
         name="password"
         label="密码"
-        rules={[{ required: true, message: '请输入你的密码！' }]}
+        rules={[
+          { required: true, message: '请输入你的密码！' },
+          { min: 3, max: 12, message: '长度在3-12个字符' }
+        ]}
       >
         <Input.Password
           prefix={<LockOutlined className="site-form-item-icon" />}

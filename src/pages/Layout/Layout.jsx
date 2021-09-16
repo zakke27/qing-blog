@@ -7,6 +7,7 @@ import { Layout as AntdLayout, BackTop } from 'antd'
 import { ToTopOutlined } from '@ant-design/icons'
 
 import Loading from '../../components/Loading/Loading'
+import PrivateRoute from '../../routes/PrivateRoute'
 
 const NavBar = lazy(() => import('../../components/NavBar/NavBar'))
 // const Content = lazy(() => import('../../components/Content/Content'))
@@ -15,7 +16,7 @@ const Home = lazy(() => import('../../components/Home/Home'))
 const Hot = lazy(() => import('../../components/Hot/Hot'))
 const History = lazy(() => import('../../components/History/History'))
 const Blog = lazy(() => import('../../components/Blog/Blog'))
-const Admin = lazy(() => import('../Admin/Admin'))
+const User = lazy(() => import('../User/User'))
 const NotFound = lazy(() => import('../../components/404/NotFound'))
 
 const Layout = () => {
@@ -59,9 +60,7 @@ const Layout = () => {
               <Route path="/post/:id">
                 <Blog />
               </Route>
-              <Route path="/admin">
-                <Admin />
-              </Route>
+              <PrivateRoute path="/user" component={User} />
               <Route path="*">
                 <NotFound />
               </Route>

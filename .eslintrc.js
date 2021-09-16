@@ -30,6 +30,6 @@ module.exports = {
     'prefer-arrow-callback': 'off',
     '@emotion/jsx-import': 'error',
     '@emotion/pkg-renaming': 'error',
-    'react/jsx-uses-react': 2
+    'no-unused-vars': 'warn'
   }
 }

@@ -15,3 +15,10 @@ export const userRegister = userInfo => {
     data: qs.stringify(userInfo)
   })
 }
+
+export const userPostByUid = uid => {
+  return request({
+    url: '/user/post',
+    data: uid
+  })
+}

@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Layout, Input, Menu, Avatar, Dropdown, Button } from 'antd'
-import { SettingOutlined, PoweroffOutlined, ReadOutlined } from '@ant-design/icons'
+import { PoweroffOutlined, ReadOutlined } from '@ant-design/icons'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { getUser, getToken, removeAll } from '../../utils/Auth'
@@ -32,11 +32,6 @@ const NavBar = props => {
     } else {
       showModal()
     }
-  }
-
-  // 管理博客
-  const manageBlog = () => {
-    // history.push()
   }
 
   // 退出登录
@@ -116,14 +111,10 @@ const NavBar = props => {
                   overlay={
                     <Menu>
                       <Menu.Item key="1">
-                        <Link to="/admin">
+                        <Link to="/user">
                           <ReadOutlined />
-                          <Span>文章管理</Span>
+                          <Span>个人中心</Span>
                         </Link>
-                      </Menu.Item>
-                      <Menu.Item key="2">
-                        <SettingOutlined />
-                        <Span>设置</Span>
                       </Menu.Item>
                       <Menu.Item key="3" onClick={logout}>
                         <PoweroffOutlined />
