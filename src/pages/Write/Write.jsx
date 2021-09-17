@@ -12,7 +12,7 @@ const Write = () => {
 
   useTitle('写文章')
 
-  const publishBlog = () => {
+  const publishArticle = () => {
     console.log(value)
     //todo 🚧将blog推送到后端保存
   }
@@ -43,7 +43,7 @@ const Write = () => {
             font-size: 20px;
           `}
         />
-        <Button type="primary" onClick={publishBlog} css={css``}>
+        <Button type="primary" onClick={publishArticle} css={css``}>
           发布
         </Button>
       </header>

@@ -16,9 +16,9 @@ export const userRegister = userInfo => {
   })
 }
 
-export const userPostByUid = uid => {
+export const getUserArticleByUid = uid => {
   return request({
-    url: '/user/post',
+    url: '/user/article',
     data: uid
   })
 }

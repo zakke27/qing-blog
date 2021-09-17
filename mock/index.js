@@ -19,28 +19,46 @@ Mock.mock('/user/register', {
   message: '注册成功'
 })
 
-Mock.mock('/user/post', [
-  // 0审核，1通过，2不通过
-  { id: 1, title: '第一篇文章', content: `# hello world1`, status: 0 },
-  { id: 2, title: '第二篇文章', content: `# hello world2`, status: 1 },
-  { id: 3, title: '第三篇文章', content: `# hello world3`, status: 2 },
-  { id: 4, title: '第四篇文章', content: `# hello world4`, status: 2 },
-  { id: 5, title: '第五篇文章', content: `# hello world5`, status: 1 },
-  { id: 6, title: '第六篇文章', content: `# hello world6`, status: 1 },
-  { id: 7, title: '第七篇文章', content: `# hello world7`, status: 0 }
-])
+Mock.mock('/user/article', {
+  'userArticle|20': [
+    { 'id|+1': 1, 'title|1': '@title', 'content|1': '@cparagraph(80,100)', 'status|0-2': 0 }
+  ]
+})
 
-Mock.mock('/post', {
-  'articles|1000': [
+Mock.mock('/articleList', {
+  // 'dada|1': '@guid',
+  'articleList|20': [
     {
+      // 'guid|1': '@guid',
       'id|+1': 1,
       'author|1': '@name',
+      'avatar|1': 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
       'title|1': '@title',
-      'content|1': '@cparagraph'
+      'content|1': '@cparagraph(100,150)',
+      'comments|5-8': [
+        {
+          'userid|+1': 100,
+          'author|1': '@name',
+          'content|1': '@cparagraph(1, 3)',
+          'replyDate|1': '@date("2021-09-dd")'
+        }
+      ]
     }
   ]
 })
 
-// Mock.setup({
-//   timeout: 3000
-// })
+Mock.mock(/\/article\/*/, {
+  articleInfo: {
+    'author|1': '@name',
+    'title|1': '@title',
+    'content|1': '@cparagraph(100,150)',
+    'comments|5-8': [
+      {
+        'userId|+1': 100,
+        'author|1': '@name',
+        'content|1': '@cparagraph(1, 3)',
+        'replyDate|1': '@date("2021-09-dd")'
+      }
+    ]
+  }
+})

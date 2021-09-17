@@ -6,7 +6,7 @@ const History = () => {
     <div
       css={css`
         background-color: lightblue;
-        height: 100%;
+        height: 100vh;
       `}
     >
       History

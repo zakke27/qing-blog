@@ -15,7 +15,7 @@ const Modal = lazy(() => import('../../components/Modal/Modal'))
 const Home = lazy(() => import('../../components/Home/Home'))
 const Hot = lazy(() => import('../../components/Hot/Hot'))
 const History = lazy(() => import('../../components/History/History'))
-const Blog = lazy(() => import('../../components/Blog/Blog'))
+const Article = lazy(() => import('../../components/Article/Article'))
 const User = lazy(() => import('../User/User'))
 const NotFound = lazy(() => import('../../components/404/NotFound'))
 
@@ -42,7 +42,6 @@ const Layout = () => {
             margin-top: 6rem;
             /* background-color: white; */
             min-width: 960px;
-            height: 100vh;
             font-size: 16px;
           `}
         >
@@ -57,8 +56,8 @@ const Layout = () => {
               <Route path="/history">
                 <History />
               </Route>
-              <Route path="/post/:id">
-                <Blog />
+              <Route path="/article/:id">
+                <Article />
               </Route>
               <PrivateRoute path="/user" component={User} />
               <Route path="*">

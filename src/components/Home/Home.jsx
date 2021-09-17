@@ -1,37 +1,49 @@
 /** @jsx jsx **/
 import { css, jsx } from '@emotion/react'
 import { useState, useEffect } from 'react'
-import { Skeleton, Card, Avatar, List, Spin } from 'antd'
+import { Avatar, List, message } from 'antd'
 import InfiniteScroll from 'react-infinite-scroller'
-import { LikeOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons'
+import { LikeOutlined, MessageOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
-import * as blogApi from '../../api/blog'
-
-const { Meta } = Card
+import * as articleApi from '../../api/article'
+import useScrollToTop from '../../hooks/useScrollToTop'
 
 const Home = () => {
   let history = useHistory()
 
   const [articleList, setArticleList] = useState([])
+  const [hasMore, setHasMore] = useState(true)
+
+  useScrollToTop()
 
   useEffect(() => {
-    blogApi
-      .getBlogList()
+    articleApi
+      .getArticleList()
       .then(res => {
-        console.log(res.data)
-        setArticleList(res.data.articles)
+        // console.log(res.data)
+        setArticleList(res.data.articleList)
       })
       .catch(err => console.log(err))
   }, [])
 
-  const getArticleDetail = id => {
-    return () => {
-      console.log(id)
-      let currentBlog = articleList.find(article => {
-        return article.id === id
-      })
-      history.push({ pathname: `/post/${id}`, state: currentBlog })
+  useEffect(() => console.log('articleList', articleList), [articleList])
+  // 处理滚动加载
+  const handleInfiniteOnLoad = () => {
+    if (articleList.length > 200) {
+      message.warning('Infinite List loaded all')
+      setHasMore(false)
+      return
     }
+    articleApi
+      .getArticleList()
+      .then(res => {
+        // console.log(res)
+        let temp = articleList.concat(res.data.articleList)
+        setArticleList(temp)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   return (
@@ -39,7 +51,7 @@ const Home = () => {
       css={css`
         display: flex;
         flex-flow: row nowrap;
-        background-color: lightpink;
+        /* background-color: lightpink; */
         padding: 10px;
       `}
     >
@@ -47,7 +59,7 @@ const Home = () => {
         css={css`
           flex: 3;
           margin-right: 1.5rem;
-          background-color: lightblue;
+          background-color: #ffff;
           height: 100%;
         `}
       >
@@ -55,37 +67,47 @@ const Home = () => {
           css={css`
             background-color: #ffffff;
             margin: 10px;
+            height: 1.5rem;
           `}
         >
-          top-bar
+          文章列表
         </div>
-        {/* <Skeleton loading={articleList ? false : true} avatar active /> */}
-
-        {articleList.map((article, index) => {
-          return (
-            <Card
-              onClick={getArticleDetail(article.id)}
-              key={index}
-              actions={[
-                <LikeOutlined key="like" />,
-                <EditOutlined key="edit" />,
-                <EllipsisOutlined key="ellipsis" />
-              ]}
-              css={css`
-                margin: 10px;
-                cursor: pointer;
-              `}
-            >
-              <p>作者：{article.author}</p>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title={article.title}
-              />
-            </Card>
-          )
-        })}
+        <hr />
+        <InfiniteScroll
+          initialLoad={false}
+          pageStart={0}
+          loadMore={handleInfiniteOnLoad}
+          hasMore={hasMore}
+          threshold={150}
+        >
+          <List
+            css={css`
+              margin: 10px;
+              cursor: pointer;
+            `}
+            itemLayout="vertical"
+            dataSource={articleList}
+            renderItem={article => (
+              <List.Item
+                onClick={() => {
+                  history.push(`/article/${article.id}`)
+                }}
+                key={article.id}
+                actions={[
+                  <div key="like">
+                    <LikeOutlined /> {178}
+                  </div>,
+                  <div key="comment">
+                    <MessageOutlined /> {89}
+                  </div>
+                ]}
+              >
+                <div>作者：{article.author}</div>
+                <List.Item.Meta avatar={<Avatar src={article.avatar} />} title={article.title} />
+              </List.Item>
+            )}
+          />
+        </InfiniteScroll>
       </div>
 
       <div

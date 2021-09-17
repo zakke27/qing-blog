@@ -6,7 +6,7 @@ const Hot = () => {
     <div
       css={css`
         background-color: lightsalmon;
-        height: 100%;
+        height: 100vh;
       `}
     >
       Hot

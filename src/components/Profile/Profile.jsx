@@ -47,7 +47,7 @@ const Profile = () => {
           </Form.Item>
           <Divider />
           <Form.Item label="个人介绍" name="introduction">
-            <Input.TextArea showCount maxLength={100} />
+            <Input.TextArea showCount maxLength={100} placeholder="填写个人介绍" />
           </Form.Item>
           <Divider />
           <Form.Item
