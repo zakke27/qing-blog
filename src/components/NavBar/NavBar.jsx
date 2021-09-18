@@ -47,10 +47,10 @@ const NavBar = props => {
         top: 0;
         z-index: 1;
         width: 100%;
-        /* height: 100%; */
-        /* height: 60px; */
+        border-top: 2px solid #1890ff;
         background-color: white;
-        font-size: 16px;
+        font-size: 18px;
+        box-sizing: content-box;
       `}
     >
       <div
@@ -68,87 +68,99 @@ const NavBar = props => {
           css={css`
             display: flex;
             align-items: center;
-            /* background-color: white; */
+            /* background-color: green; */
           `}
         >
-          <li
+          <Menu
+            mode="horizontal"
+            theme="light"
+            selectedKeys={[location.pathname]}
             css={css`
+              /* background-color: lightcoral; */
               margin: 1px 10px;
+              font-size: 16px;
+              display: flex;
+              align-items: center;
+              .ant-menu-title-content {
+                a {
+                  color: #7f7f7f;
+                }
+              }
             `}
           >
-            <Menu mode="horizontal" theme="light" selectedKeys={[location.pathname]} css={css``}>
-              <Menu.Item key="/">
-                <Link to="/">首页</Link>
-              </Menu.Item>
-              <Menu.Item key="/hot">
-                <Link to="/hot">热门</Link>
-              </Menu.Item>
-              <Menu.Item key="/history">
-                <Link to="/history">历史</Link>
-              </Menu.Item>
-            </Menu>
-          </li>
-          <li
+            <Menu.Item key="/">
+              <Link to="/">首页</Link>
+            </Menu.Item>
+            <Menu.Item key="/hot">
+              <Link to="/hot">热门</Link>
+            </Menu.Item>
+            <Menu.Item key="/history">
+              <Link to="/history">历史</Link>
+            </Menu.Item>
+          </Menu>
+
+          <Search
+            placeholder="搜索你感兴趣的内容"
+            size="large"
+            allowClear
+            onSearch={onSearch}
             css={css`
               width: 350px;
               display: flex;
               align-items: center;
               margin: 0 40px;
             `}
-          >
-            <Search placeholder="搜索你感兴趣的内容" size="large" allowClear onSearch={onSearch} />
-          </li>
-          <li>
-            <div css={css``}>
-              <Button type="primary" onClick={WriteBlog}>
-                写文章
-              </Button>
-              {getToken() ? (
-                <Dropdown
-                  trigger={['click']}
-                  placement="bottomCenter"
-                  arrow
-                  overlay={
-                    <Menu>
-                      <Menu.Item key="1">
-                        <Link to="/user">
-                          <ReadOutlined />
-                          <Span>个人中心</Span>
-                        </Link>
-                      </Menu.Item>
-                      <Menu.Item key="3" onClick={logout}>
-                        <PoweroffOutlined />
-                        <Span>退出</Span>
-                      </Menu.Item>
-                    </Menu>
-                  }
-                >
-                  <Avatar
-                    className="avatar"
-                    src={getUser().avatar || null}
-                    size="large"
-                    css={css`
-                      cursor: pointer;
-                      border: 1px solid silver;
-                      margin-left: 60px;
-                    `}
-                  />
-                </Dropdown>
-              ) : (
-                <Button
-                  type="default"
-                  onClick={showModal}
+          />
+
+          <div css={css``}>
+            <Button type="primary" onClick={WriteBlog}>
+              写文章
+            </Button>
+            {getToken() ? (
+              <Dropdown
+                trigger={['click']}
+                placement="bottomCenter"
+                arrow
+                overlay={
+                  <Menu>
+                    <Menu.Item key="1">
+                      <Link to="/user">
+                        <ReadOutlined />
+                        <Span>个人中心</Span>
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item key="3" onClick={logout}>
+                      <PoweroffOutlined />
+                      <Span>退出</Span>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <Avatar
+                  className="avatar"
+                  src={getUser().avatar || null}
+                  size="large"
                   css={css`
-                    margin-left: 40px;
-                    color: #1890ff;
-                    border-color: #1890ff;
+                    cursor: pointer;
+                    border: 1px solid silver;
+                    margin-left: 60px;
                   `}
-                >
-                  登录
-                </Button>
-              )}
-            </div>
-          </li>
+                />
+              </Dropdown>
+            ) : (
+              <Button
+                type="default"
+                onClick={showModal}
+                css={css`
+                  margin-left: 40px;
+                  color: #1890ff;
+                  border-color: #1890ff;
+                `}
+              >
+                登录
+              </Button>
+            )}
+          </div>
         </nav>
       </div>
     </Header>

@@ -26,16 +26,16 @@ Mock.mock('/user/article', {
 })
 
 Mock.mock('/articleList', {
-  // 'dada|1': '@guid',
   'articleList|20': [
+    // 文章列表中每一篇文章的信息
     {
-      // 'guid|1': '@guid',
       'id|+1': 1,
       'author|1': '@name',
       'avatar|1': 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
       'title|1': '@title',
       'content|1': '@cparagraph(100,150)',
-      'comments|5-8': [
+      'like|40-104': 40,
+      'comments|1-18': [
         {
           'userid|+1': 100,
           'author|1': '@name',
@@ -48,10 +48,12 @@ Mock.mock('/articleList', {
 })
 
 Mock.mock(/\/article\/*/, {
+  // 某一篇文章的信息
   articleInfo: {
     'author|1': '@name',
     'title|1': '@title',
     'content|1': '@cparagraph(100,150)',
+    'like|40-104': 40,
     'comments|5-8': [
       {
         'userId|+1': 100,

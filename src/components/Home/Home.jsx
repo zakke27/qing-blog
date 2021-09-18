@@ -26,7 +26,6 @@ const Home = () => {
       .catch(err => console.log(err))
   }, [])
 
-  useEffect(() => console.log('articleList', articleList), [articleList])
   // 处理滚动加载
   const handleInfiniteOnLoad = () => {
     if (articleList.length > 200) {
@@ -84,25 +83,26 @@ const Home = () => {
             css={css`
               margin: 10px;
               cursor: pointer;
+              padding: 0 10px;
             `}
             itemLayout="vertical"
             dataSource={articleList}
             renderItem={article => (
               <List.Item
+                key={article.id}
                 onClick={() => {
                   history.push(`/article/${article.id}`)
                 }}
-                key={article.id}
                 actions={[
+                  <div key="author">作者：{article.author}</div>,
                   <div key="like">
-                    <LikeOutlined /> {178}
+                    <LikeOutlined /> {article.like}
                   </div>,
                   <div key="comment">
-                    <MessageOutlined /> {89}
+                    <MessageOutlined /> {article.comments.length}
                   </div>
                 ]}
               >
-                <div>作者：{article.author}</div>
                 <List.Item.Meta avatar={<Avatar src={article.avatar} />} title={article.title} />
               </List.Item>
             )}

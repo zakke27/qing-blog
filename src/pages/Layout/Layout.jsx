@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/react'
 import { Suspense, lazy, useState } from 'react'
 import { Route, Switch } from 'react-router-dom'
 
-import { Layout as AntdLayout, BackTop } from 'antd'
+import { BackTop } from 'antd'
 import { ToTopOutlined } from '@ant-design/icons'
 
 import Loading from '../../components/Loading/Loading'
@@ -29,7 +29,7 @@ const Layout = () => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <AntdLayout
+      <div
         css={css`
           display: flex;
           flex-direction: column;
@@ -83,7 +83,7 @@ const Layout = () => {
             <ToTopOutlined />
           </div>
         </BackTop>
-      </AntdLayout>
+      </div>
     </Suspense>
   )
 }
