@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/react'
 import { useState, useEffect } from 'react'
 import { Avatar, List, message } from 'antd'
-import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { LikeOutlined, MessageOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import * as articleApi from '../../api/article'
@@ -73,11 +73,10 @@ const Home = () => {
         </div>
         <hr />
         <InfiniteScroll
-          initialLoad={false}
-          pageStart={0}
-          loadMore={handleInfiniteOnLoad}
+          dataLength={articleList.length}
+          next={handleInfiniteOnLoad}
           hasMore={hasMore}
-          threshold={150}
+          scrollThreshold={0.97}
         >
           <List
             css={css`

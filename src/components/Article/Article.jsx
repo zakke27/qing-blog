@@ -1,61 +1,88 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react'
-import styled from '@emotion/styled'
-import MDEditor from '@uiw/react-md-editor'
-import React, { useState, useEffect } from 'react'
+
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Comment, Avatar, Form, Input, List, Divider, Badge } from 'antd'
-import { LikeFilled, LikeOutlined, CommentOutlined, WarningOutlined } from '@ant-design/icons'
+
+import ArticleTool from './ArticleTool/ArticleTool'
+import ArticleContent from './ArticleContent/ArticleContent'
+
 import * as articleApi from '../../api/article'
+import * as userApi from '../../api/user'
 import useScrollToTop from '../../hooks/useScrollToTop'
+import { getToken, getUser } from '../../utils/Auth'
+import PropTypes from 'prop-types'
 
-const IconDiv = styled.div`
-  /* margin: 8px 0; */
-  width: 36px;
-  height: 36px;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  font-size: 16px;
-  border: 1px solid silver;
-  cursor: pointer;
-  :hover {
-    color: #1890ff;
-    border-color: #1890ff;
-  }
-`
-
-const Article = () => {
-  let { id } = useParams()
-  // console.log('params', params)
+const Article = props => {
+  let { id: articleId } = useParams()
+  const { showModal } = props
 
   const [articleInfo, setArticleInfo] = useState(null)
   const [isComment, setIsComment] = useState(true)
+  const [isLiked, setIsLiked] = useState(false)
+
+  const commentRef = useRef()
 
   useScrollToTop()
+
   useEffect(() => {
+    // 根据文章id请求文章详细信息
     articleApi
-      .getArticleInfoById(id)
+      .getArticleInfoById(articleId)
       .then(res => {
-        console.log(res)
+        // console.log(res)
+        if (res.data.code === 200) {
+          // console.log(11)
+        }
         setArticleInfo(res.data.articleInfo)
       })
       .catch(err => {
         console.log(err)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
-  // 锚点跳转
-  const scrollToAnchor = anchorName => {
-    if (anchorName) {
-      let anchorElement = document.getElementById(anchorName)
-      if (anchorElement) {
-        anchorElement.scrollIntoView({ block: 'center' })
-        // scroll.scrollTo('100px')
-      }
+    // 根据用户id请求用户点赞过的文章列表
+    if (getToken()) {
+      userApi
+        .getUserLikeArticleByUid(getUser().id)
+        .then(res => {
+          console.log(1111)
+          setIsLiked(res.data.likeArticleList.includes(articleId * 1))
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }, [articleId])
+
+  // 点赞文章 like
+  const likeArticle = () => {
+    if (getToken()) {
+      articleApi
+        .likeArticleById(articleId)
+        .then(res => {
+          if (res.data.code === 200) {
+            if (isLiked) {
+              setIsLiked(false)
+              setArticleInfo({ ...articleInfo, likeCount: articleInfo.likeCount - 1 })
+            } else {
+              setIsLiked(true)
+              setArticleInfo({ ...articleInfo, likeCount: articleInfo.likeCount + 1 })
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else {
+      showModal()
+    }
+  }
+
+  const writeComment = () => {
+    setIsComment(false)
+    if (!getToken()) {
+      showModal()
+      commentRef.current.blur()
     }
   }
 
@@ -70,115 +97,15 @@ const Article = () => {
       `}
     >
       {/* 点赞评论举报 按钮 */}
-      <div
-        css={css`
-          position: fixed;
-          /* width: 50px; */
-          height: 140px;
-          /* background-color: green; */
-          margin-left: -6.5rem;
-          margin-top: 5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        `}
-      >
-        <Badge count={5} color="#b2bac2">
-          <IconDiv>
-            <LikeOutlined />
-          </IconDiv>
-        </Badge>
-        <Badge count={5} color="#b2bac2">
-          <IconDiv
-            onClick={() => {
-              scrollToAnchor('comment')
-            }}
-          >
-            <CommentOutlined />
-          </IconDiv>
-        </Badge>
-        <IconDiv>
-          <WarningOutlined />
-        </IconDiv>
-      </div>
+      <ArticleTool articleInfo={articleInfo} likeArticle={likeArticle} isLiked={isLiked} />
       {/* 文章主体区 */}
-      <div
-        css={css`
-          background-color: #ffffff;
-          flex: 3;
-          padding: 10px 20px;
-        `}
-      >
-        {articleInfo ? (
-          <React.Fragment>
-            <div>
-              <h1>{articleInfo.title}</h1>
-              <div>作者：{articleInfo.author}</div>
-              <br />
-              <MDEditor.Markdown source={articleInfo.content} />
-              <br />
-            </div>
-            <div>
-              <Comment
-                avatar={
-                  <Avatar
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                    alt="Han Solo"
-                  />
-                }
-                content={
-                  <>
-                    <Form.Item>
-                      <Input.TextArea
-                        rows={4}
-                        placeholder="输入评论（Enter换行）"
-                        onFocus={() => {
-                          setIsComment(false)
-                        }}
-                        onBlur={() => {
-                          setIsComment(true)
-                        }}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      css={css`
-                        float: right;
-                      `}
-                    >
-                      <Button htmlType="submit" type="primary" disabled={isComment}>
-                        发表评论
-                      </Button>
-                    </Form.Item>
-                  </>
-                }
-              />
-            </div>
-            <Divider
-              css={css`
-                border-width: 2px;
-              `}
-            />
-            <div>
-              <h3 id="comment">全部评论（{articleInfo.comments.length}）</h3>
-              <List
-                className="comment-list"
-                dataSource={articleInfo.comments}
-                renderItem={comment => (
-                  <li>
-                    <Comment
-                      author={comment.author}
-                      avatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                      content={comment.content}
-                      datetime={comment.replyDate}
-                    />
-                    <Divider />
-                  </li>
-                )}
-              />
-            </div>
-          </React.Fragment>
-        ) : null}
-      </div>
+      <ArticleContent
+        articleInfo={articleInfo}
+        isComment={isComment}
+        setIsComment={setIsComment}
+        writeComment={writeComment}
+        commentRef={commentRef}
+      />
       <div
         css={css`
           background-color: #ffffff;
@@ -191,6 +118,10 @@ const Article = () => {
       </div>
     </div>
   )
+}
+
+Article.propTypes = {
+  showModal: PropTypes.func
 }
 
 export default Article

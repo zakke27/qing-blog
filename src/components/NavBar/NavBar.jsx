@@ -27,7 +27,6 @@ const NavBar = props => {
   // 跳转写文章路由
   const WriteBlog = () => {
     if (getToken()) {
-      console.log(111)
       history.push('/write')
     } else {
       showModal()

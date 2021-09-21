@@ -57,7 +57,7 @@ const Layout = () => {
                 <History />
               </Route>
               <Route path="/article/:id">
-                <Article />
+                <Article showModal={showModal} />
               </Route>
               <PrivateRoute path="/user" component={User} />
               <Route path="*">
