@@ -1,12 +1,12 @@
 @import 'antd/dist/antd.css';
 
-body {
-  background: #f0f2f5;
-  overflow-y: scroll;
-}
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  background: #f0f2f5;
+  overflow-y: scroll;
 }

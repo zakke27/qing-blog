@@ -2,9 +2,7 @@
   "semi": false,
   "singleQuote": true,
   "arrowParens": "avoid",
-  "printWidth": 100,
+  "printWidth": 85,
   "trailingComma": "none",
-  "jsxSingleQuote": false,
-  "useTabs": false,
-  "tabWidth": 2
+  "jsxSingleQuote": false
 }

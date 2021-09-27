@@ -1,35 +1,27 @@
 module.exports = {
+  extends: [
+    'alloy',
+    'alloy/react',
+    'alloy/typescript',
+    'plugin:react-hooks/recommended'
+  ],
   env: {
     browser: true,
-    es2021: true,
-    node: true
+    es2021: true
   },
   settings: {
     react: {
       version: 'detect'
     }
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:prettier/recommended'
-  ],
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true
-    },
-    ecmaVersion: 12,
-    sourceType: 'module'
+  globals: {
+    // 你的全局变量（设置为 false 表示它不允许被重新赋值）
+    //
+    // myGlobal: false
   },
-  plugins: ['prettier', '@emotion'],
+  plugins: ['@emotion'],
   rules: {
-    'prettier/prettier': 'warn',
-    'react/prop-types': 'warn',
-    'arrow-body-style': 'off',
-    'prefer-arrow-callback': 'off',
-    '@emotion/jsx-import': 'error',
-    '@emotion/pkg-renaming': 'error',
-    'no-unused-vars': ['warn', { varsIgnorePattern: 'React' }]
+    // 自定义你的规则
+    '@emotion/pkg-renaming': 'error'
   }
 }
