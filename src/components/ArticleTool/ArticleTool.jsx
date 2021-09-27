@@ -69,13 +69,20 @@ const ArticleTool = props => {
           </IconDiv>
           <div>{articleInfo && articleInfo.likeCount}</div>
         </div>
-        <IconDiv
-          onClick={() => {
-            scrollToAnchor('comment')
-          }}
+        <div
+          css={css`
+            display: flex;
+            align-items: center;
+          `}
         >
-          <CommentOutlined />
-        </IconDiv>
+          <IconDiv
+            onClick={() => {
+              scrollToAnchor('comment')
+            }}
+          >
+            <CommentOutlined />
+          </IconDiv>
+        </div>
         <IconDiv>
           <WarningOutlined />
         </IconDiv>

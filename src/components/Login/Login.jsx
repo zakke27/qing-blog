@@ -30,7 +30,7 @@ const Login = props => {
 
   // login failed
   const handleLoginFailed = error => {
-    console.log('登录失败', error)
+    
   }
   return (
     <Form

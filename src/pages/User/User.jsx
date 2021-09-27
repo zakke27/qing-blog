@@ -66,6 +66,7 @@ const User = () => {
           </Menu>
         </div>
       </nav>
+
       <div
         css={css`
           margin-left: 264px;
