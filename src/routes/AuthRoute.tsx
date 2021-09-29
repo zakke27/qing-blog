@@ -12,7 +12,7 @@ const AuthRoute = (props: Props) => {
     <Route
       {...rest}
       render={({ history }): any =>
-        roles.includes(getUser()?.role) ? children : history.goBack()
+        roles.includes(getUser()?.identity) ? children : history.goBack()
       }
     />
   )

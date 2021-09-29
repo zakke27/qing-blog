@@ -1,29 +1,30 @@
 /** @jsxImportSource  @emotion/react */
 import { css, jsx } from '@emotion/react'
 import React, { useState } from 'react'
-import { Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route, Link, useLocation, useHistory } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Layout, Menu } from 'antd'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  MailOutlined
+  HomeOutlined,
+  ReadOutlined
 } from '@ant-design/icons'
 import AuthRoute from '../../routes/AuthRoute'
+import AdminUserControl from '../../components/AdminUserControl/AdminUserControl'
+import AdminArticleControl from '../../components/AdminArticleControl/AdminArticleControl'
 
 const { SubMenu } = Menu
 const { Header, Sider, Content } = Layout
 
 const AdminContainer = styled(Layout)`
-  margin-top: -5rem;
-  background-color: lightblue;
+  margin-top: -4.6rem;
+  /* background-color: lightblue; */
   min-width: 1440px;
 `
 const Sidebar = styled(Sider)`
-  height: 95vh;
+  height: 90vh;
 `
 
 const LogoBox = styled.div`
@@ -37,8 +38,8 @@ const HeaderBox = styled(Header)`
   padding: 0;
 `
 const ContentBox = styled(Content)`
-  background-color: lightgreen;
-  padding: 15px;
+  padding: 20px 0 0 20px;
+  /* background-color: gray; */
 `
 
 const ToggleBox = styled.div`
@@ -55,6 +56,8 @@ const ToggleBox = styled.div`
 `
 
 const Admin: React.FC = () => {
+  const history = useHistory()
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
 
   const toggle = () => {
@@ -64,24 +67,24 @@ const Admin: React.FC = () => {
   return (
     <AdminContainer>
       <Sidebar trigger={null} collapsible collapsed={collapsed}>
-        <LogoBox />
-        <Menu theme="dark" mode="inline">
-          <Menu.Item key="1" icon={<VideoCameraOutlined />}>
-            <Link to="/admin/hello">首页</Link>
+        <LogoBox
+          onClick={() => {
+            history.push('/')
+          }}
+          css={css`
+            cursor: pointer;
+          `}
+        />
+        <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]}>
+          <Menu.Item key="/admin" icon={<HomeOutlined />}>
+            <Link to="/admin">首页</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<UserOutlined />}>
-            用户管理
+          <Menu.Item key="/admin/user-control" icon={<UserOutlined />}>
+            <Link to="/admin/user-control">用户管理</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<UploadOutlined />}>
-            文章管理
+          <Menu.Item key="/admin/article-control" icon={<ReadOutlined />}>
+            <Link to="/admin/article-control"> 文章管理</Link>
           </Menu.Item>
-          <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
-            <Menu.Item key="4">Option 1</Menu.Item>
-            <Menu.Item key="5">Option 2</Menu.Item>
-            <Menu.Item key="6">Option 3</Menu.Item>
-
-            <Menu.Item key="7">Option 4</Menu.Item>
-          </SubMenu>
         </Menu>
       </Sidebar>
       <Layout>
@@ -93,9 +96,14 @@ const Admin: React.FC = () => {
         {/* 动态内容区 */}
         <ContentBox>
           <Switch>
-            {/* <Route path="/admin">1</Route> */}
-            <AuthRoute path="/admin/hello" roles={[0]}>
+            <AuthRoute exact path="/admin" roles={[0]}>
               <h3>11</h3>
+            </AuthRoute>
+            <AuthRoute path="/admin/user-control" roles={[0]}>
+              <AdminUserControl />
+            </AuthRoute>
+            <AuthRoute path="/admin/article-control" roles={[0]}>
+              <AdminArticleControl />
             </AuthRoute>
           </Switch>
         </ContentBox>

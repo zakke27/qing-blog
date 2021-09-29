@@ -6,11 +6,11 @@ import { useParams } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
 import {
   cancelArticleLike,
-  getArticleDetailById,
+  getArticleDetail,
   saveArticleLike
 } from '../../api/article'
-import { getUserLikedById } from '../../api/user'
-import { getToken, getUser } from '../../utils/Auth'
+import { getUserLiked } from '../../api/user'
+import { getUser } from '../../utils/Auth'
 import { Divider } from 'antd'
 import {
   LikeFilled,
@@ -90,29 +90,33 @@ interface Props {
 }
 
 const Article: React.FC<Props> = ({ showModal }) => {
-  const { id: articleId } = useParams<RouteParams>()
+  const { id } = useParams<RouteParams>()
+  const articleId = parseInt(id, 10)
+
   const [articleDetail, setArticleDetail] = useState<ArticleDetail | null>(null)
   const [isLiked, setIsLiked] = useState<boolean>(false)
 
   useEffect(() => {
     // 根据文章id请求文章详细信息
-    getArticleDetailById(articleId)
-      .then(res => {
-        console.log('getArticleDetailById', res)
-        if (res.data.code === 200) {
-          setArticleDetail(res.data.data)
+    const fetchData = async () => {
+      try {
+        const res = await getArticleDetail(articleId)
+        if (res) {
+          console.log(res)
+          // setArticleDetail(res.data.data)
         }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      } catch (error) {
+       console.error(error)
+      }
+    }
+    fetchData()
     // 根据用户id请求用户点赞过的文章列表
-    if (getToken()) {
-      getUserLikedById(getUser().id)
+    if (getUser()) {
+      getUserLiked(getUser().userid)
         .then(res => {
           // console.log('getUserLikedById', res)
           if (res.data.code === 200) {
-            const temp: boolean = res.data.data.includes(parseInt(articleId, 10))
+            const temp: boolean = res.data.data.includes(articleId)
             setIsLiked(temp)
           }
         })
@@ -125,11 +129,11 @@ const Article: React.FC<Props> = ({ showModal }) => {
   // 点赞与取消点赞
   const likeArticle = async () => {
     // FIXME
-    if (getToken() && articleDetail) {
+    if (getUser() && articleDetail) {
       if (!isLiked) {
         // 点赞
-        const res = await saveArticleLike(articleId, String(getUser().id)).catch(
-          err => console.log(err)
+        const res = await saveArticleLike(articleId, getUser().userid).catch(err =>
+          console.log(err)
         )
         if (res?.data.code === 200) {
           console.log(res)
@@ -141,7 +145,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
         // })
       } else {
         // 取消点赞
-        const res = await cancelArticleLike(articleId, String(getUser().id))
+        const res = await cancelArticleLike(articleId, getUser().userid)
         if (res.data.code === 200) {
           console.log(res)
           setIsLiked(false)

@@ -3,8 +3,11 @@ import { css, jsx } from '@emotion/react'
 import React, { useState } from 'react'
 import { Modal, Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { login, register, ILoginParams, IRegisterParams } from '../../api/user'
-import { setToken, setUser } from '../../utils/Auth'
+import { login, register } from '../../api/user'
+import { setUser } from '../../utils/Auth'
+import { LoginParams } from '../../types/interfaces'
+
+type RegisterParams = LoginParams
 
 interface Props {
   modalVisible: boolean
@@ -16,31 +19,53 @@ const LoginModal: React.FC<Props> = ({ modalVisible, showModal }) => {
   const [form] = Form.useForm()
 
   // 登录
-  const handleLogin = (userInfo: ILoginParams) => {
-    login(userInfo)
-      .then(res => {
-        console.log(res)
-        if (res.data?.id) {
-          setToken('1q2w3e4r5t6y0')
-          setUser(res.data)
-          showModal()
-          message.success('登录成功', 2)
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  const handleLogin = async (userInfo: LoginParams) => {
+    setUser({
+      userid: 2,
+      username: 'zakke',
+      password: 'sq1e1',
+      identity: 0,
+      accountstatus: 1
+    }) // TODO just test
+    try {
+      const res = await login(userInfo)
+      // 登录成功
+      if (res.data?.accountstatus === 1) {
+        setUser(res.data)
+        showModal()
+        message.success('登录成功', 2)
+      }
+      if (res.data?.accountstatus === 0) {
+        message.success('该账户封禁中，请联系管理员', 2)
+      }
+      // 用户名或密码错误
+      if (res.data === '') {
+        message.warn('用户名或密码错误', 2)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   // 注册
-  const handleRegister = (userInfo: IRegisterParams) => {
-    register(userInfo)
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  const handleRegister = async ({ username, password }: RegisterParams) => {
+    const userInfo = {
+      username,
+      password
+    }
+    try {
+      const res = await register(userInfo)
+      if (res.data?.code === 2004) {
+        // 注册失败，用户名已存在
+        message.warn('注册失败，用户名已存在', 2)
+      }
+      if (res.data?.code === 2005) {
+        setModalTitle('登录')
+        message.success('注册成功', 2)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
@@ -141,7 +166,7 @@ const LoginModal: React.FC<Props> = ({ modalVisible, showModal }) => {
               ) : (
                 // 注册时
                 <div>
-                  已有账户?
+                  已有账户？
                   <a
                     onClick={() => {
                       setModalTitle('登录')

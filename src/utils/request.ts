@@ -1,19 +1,11 @@
 import axios from 'axios'
 import { message } from 'antd'
 
-// 返回res.data的interface
-export interface HttpResponse {
-  code: number
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any
-  message: string
-}
-
 // 设置拦截器
 const axiosInstance = axios.create({
   baseURL:
-    'https://mock.apipost.cn/app/mock/project/3abafefb-8c60-45de-ae44-e07537ba3d59/',
-  // 'http://192.168.43.161:8080',
+    // 'https://mock.apipost.cn/app/mock/project/3abafefb-8c60-45de-ae44-e07537ba3d59/',
+    'http://192.168.43.161:8080',
   headers: {
     'Content-Type': 'application/json'
   }

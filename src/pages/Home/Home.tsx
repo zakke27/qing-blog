@@ -1,12 +1,12 @@
 /** @jsxImportSource  @emotion/react */
-import { css, jsx } from '@emotion/react'
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Avatar, List, message } from 'antd'
 import { LikeOutlined, MessageOutlined } from '@ant-design/icons'
-
+import { Article } from '../../types/interfaces'
 import { getArticleList } from '../../api/article'
 import Filling from '../../components/Filing/Filling'
 
@@ -32,7 +32,6 @@ const ArticleList = styled(List)`
   cursor: pointer;
   padding: 0 10px;
 `
-
 const Aside = styled.aside`
   display: flex;
   flex-direction: column;
@@ -42,63 +41,55 @@ const Aside = styled.aside`
   background-color: #ffffff;
   height: 580px;
 `
-// 文章列表中每一篇文章
-interface Article {
-  id: number
-  author: string
-  avatar: string
-  title: string
-  content: string
-  likeCount: number
-  comments: {
-    id: number
-    author: string
-    content: string
-    replyDate: string
-  }[]
-}
+
+type ArticleList = Article[]
 
 const Home: React.FC = () => {
   const history = useHistory()
-  const [articleList, setArticleList] = useState([])
-  const [hasMore, setHasMore] = useState(true)
+  const [articleList, setArticleList] = useState<ArticleList>([])
+  const [hasMore, setHasMore] = useState<boolean>(true)
 
-  // 首屏加载文章列表
   useEffect(() => {
-    getArticleList()
-      .then(res => {
-        // console.log(res)
-        if (res.data.code === 200) {
-          setArticleList(res.data.data)
+    const fetchData = async () => {
+      try {
+        const res = await getArticleList() // 请求文章
+        console.log(res)
+        if (res?.data) {
+          // console.log(res)
+          // setArticleList(res.data)
         }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        // const res2 = await
+      } catch (error) {
+       console.error(error)
+      }
+    }
+    fetchData()
   }, [])
 
   // 处理滚动加载
-  const handleInfiniteOnLoad = () => {
+  const handleInfiniteOnLoad = async () => {
     if (articleList.length > 200) {
       message.warning('Infinite List loaded all')
       setHasMore(false)
       return
     }
-    getArticleList()
-      .then(res => {
-        // console.log(res)
-        const temp = articleList.concat(res.data.data)
+
+    try {
+      const res = await getArticleList() // 请求文章列表
+      console.log(res)
+      if (res) {
+        const temp = articleList.concat(res.data)
         setArticleList(temp)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      }
+    } catch (error) {
+     console.error(error)
+    }
   }
 
   return (
     <HomeContainer>
       <Content>
-        <Title>文章列表，无限滚动</Title>
+        <Title>芜湖 起飞🚀🚀🚀</Title>
         <hr />
         <InfiniteScroll
           dataLength={articleList.length}
@@ -113,23 +104,23 @@ const Home: React.FC = () => {
             renderItem={(article: any) => {
               return (
                 <List.Item
-                  key={article.id}
+                  key={article.articleid}
                   onClick={() => {
-                    history.push(`/article/${article.id}`)
+                    history.push(`/article/${article.articleid}`)
                   }}
                   actions={[
-                    <div key="author">作者：{article.author}</div>,
+                    <div key="author">作者：{article.username}</div>,
                     <div key="like">
-                      <LikeOutlined /> {article.like}
-                    </div>,
-                    <div key="comment">
-                      <MessageOutlined /> {article.comments.length}
+                      <LikeOutlined /> {article.articlelikecount}
                     </div>
+                    // <div key="comment">
+                    //   <MessageOutlined /> {article}
+                    // </div>
                   ]}
                 >
                   <List.Item.Meta
-                    avatar={<Avatar src={article.avatar} />}
-                    title={article.title}
+                    // avatar={<Avatar src={article.avatar} />}
+                    title={article.articletitle}
                   />
                 </List.Item>
               )
@@ -139,7 +130,7 @@ const Home: React.FC = () => {
       </Content>
       <Aside>
         施工中🚧
-        <div>将年不负，愿你挥霍最好的年华</div>
+        <div>🤠🤠🤠🤠🤠🤠🤠</div>
         <div
           css={css`
             position: relative;

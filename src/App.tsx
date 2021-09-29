@@ -28,7 +28,12 @@ const Main = styled.div`
   font-size: 16px;
 `
 
-const noNavPage = ['/user/write', '/admin', '/admin/hello']
+const noNavPage = [
+  '/user/write',
+  '/admin',
+  '/admin/user-control',
+  '/admin/article-control'
+]
 
 const App: React.FC = () => {
   const location = useLocation()

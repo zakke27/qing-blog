@@ -5,7 +5,7 @@ import React from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { Menu, Input, Button, Dropdown, Avatar } from 'antd'
 import { PoweroffOutlined, FileMarkdownOutlined } from '@ant-design/icons'
-import { getToken, getUser, removeAll } from '../../utils/Auth'
+import { getUser, removeAll } from '../../utils/Auth'
 
 const Header = styled.header`
   position: fixed;
@@ -75,7 +75,7 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
 
   // write Article
   const writeArticle = () => {
-    if (getToken()) {
+    if (getUser()) {
       history.push('/user/write')
     } else {
       showModal()
@@ -87,7 +87,7 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
   }
   // go user center
   const goUserCenter = () => {
-    if (getToken()) {
+    if (getUser()) {
       history.push('/user')
     } else {
       showModal()
@@ -104,7 +104,7 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
   return (
     <Header>
       <Nav>
-        <div className="logo">轻 blog</div>
+        <div className="logo">将年不负</div>
         <NavLeft mode="horizontal" theme="light" selectedKeys={[location.pathname]}>
           <Menu.Item key="/">
             <Link to="/">首页</Link>
@@ -118,7 +118,7 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
         </NavLeft>
         <NavRight>
           <Search placeholder="搜索你感兴趣的内容" size="large" allowClear />
-          {getUser()?.role === 0 ? (
+          {getUser()?.identity === 0 ? (
             <RoleButton onClick={goAdmin}>管理员中心</RoleButton>
           ) : (
             <RoleButton onClick={goUserCenter}>用户中心</RoleButton>
@@ -127,7 +127,7 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
             <span>写文章</span>
             <FileMarkdownOutlined />
           </Button>
-          {getToken() ? (
+          {getUser() ? (
             <Dropdown
               trigger={['click']}
               overlay={

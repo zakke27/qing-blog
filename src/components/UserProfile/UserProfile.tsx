@@ -77,7 +77,7 @@ const UserProfile: React.FC = () => {
         <Upload name="avatar" showUploadList={false} beforeUpload={beforeUpload}>
           <Avatar
             size={88}
-            src={getUser()?.avatar ?? ''}
+            src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
             css={css`
               border: 1px solid silver;
               &:hover {

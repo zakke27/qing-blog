@@ -1,37 +1,41 @@
 import { AxiosPromise } from 'axios'
-import axiosInstance, { HttpResponse } from './api'
+import axiosInstance from '../utils/request'
+import { LoginParams } from '../types/interfaces'
 
-export interface ILoginParams {
-  username: string
-  password: string
-}
-
-export interface IRegisterParams {
-  username: string
-  password: string
-  confirm: string
-}
+type RegisterParams = LoginParams
 
 // 登录
-export const login = (params: ILoginParams): Promise<HttpResponse> => {
-  return axiosInstance.post('/user/login', params)
+export const login = (data: LoginParams): AxiosPromise => {
+  return axiosInstance({
+    url: '/user/login',
+    method: 'post',
+    data
+  })
 }
 
 // 注册
-export const register = (params: IRegisterParams): Promise<HttpResponse> => {
-  return axiosInstance.post('/user/register', params)
+export const register = (data: RegisterParams): AxiosPromise => {
+  return axiosInstance({
+    url: '/user/register',
+    method: 'post',
+    data
+  })
 }
 
 // 根据用户id查询已赞文章id数组
-export const getUserLikedById = (id: string | number): Promise<HttpResponse> => {
-  return axiosInstance.get('/user/liked/%7B%7B$natural%7D%7D')
+export const getUserLiked = (data: number): AxiosPromise => {
+  return axiosInstance({
+    url: '/user/liked',
+    method: 'post',
+    data
+  })
 }
 
-// 根据用户id查询用户写过的文章
-
-export const getPersonalArticles = (uid: string | number): AxiosPromise => {
+// 根据用户id查询用户自己的文章
+export const getPersonalArticles = (userid: number): AxiosPromise => {
   return axiosInstance({
-    url: '/user/articles',
-    method: 'get'
+    url: '/user/selectArticle',
+    method: 'post',
+    data: { userid }
   })
 }
