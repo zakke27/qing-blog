@@ -1,7 +1,7 @@
 /** @jsxImportSource  @emotion/react */
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Avatar, List, message } from 'antd'
@@ -48,41 +48,42 @@ const Home: React.FC = () => {
   const history = useHistory()
   const [articleList, setArticleList] = useState<ArticleList>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
+  const [pages, setPages] = useState<number>(2)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getArticleList() // 请求文章
-        console.log(res)
+        const res = await getArticleList(1) // 请求文章
         if (res?.data) {
-          // console.log(res)
-          // setArticleList(res.data)
+          console.log(res)
+          setArticleList(res.data)
         }
-        // const res2 = await
       } catch (error) {
-       console.error(error)
+        console.error(error)
       }
     }
     fetchData()
   }, [])
 
-  // 处理滚动加载
+  // 处理滚动加载 再次请求数据
   const handleInfiniteOnLoad = async () => {
-    if (articleList.length > 200) {
-      message.warning('Infinite List loaded all')
-      setHasMore(false)
-      return
-    }
+    // if (articleList.length > 200) {
+    //   message.warning('Infinite List loaded all')
+    //   setHasMore(false)
+    //   return
+    // }
 
     try {
-      const res = await getArticleList() // 请求文章列表
-      console.log(res)
+      console.log(pages)
+      const res = await getArticleList(pages) // 请求文章列表
       if (res) {
+        console.log(res)
         const temp = articleList.concat(res.data)
         setArticleList(temp)
+        setPages(pages + 1)
       }
     } catch (error) {
-     console.error(error)
+      console.error(error)
     }
   }
 
@@ -96,7 +97,7 @@ const Home: React.FC = () => {
           next={handleInfiniteOnLoad}
           hasMore={hasMore}
           scrollThreshold={0.97}
-          loader={undefined}
+          loader={<h4>Loading...</h4>}
         >
           <ArticleList
             dataSource={articleList}

@@ -20,13 +20,13 @@ const LoginModal: React.FC<Props> = ({ modalVisible, showModal }) => {
 
   // 登录
   const handleLogin = async (userInfo: LoginParams) => {
-    setUser({
-      userid: 2,
-      username: 'zakke',
-      password: 'sq1e1',
-      identity: 0,
-      accountstatus: 1
-    }) // TODO just test
+    // setUser({
+    //   userid: 2,
+    //   username: 'zakke',
+    //   password: 'sq1e1',
+    //   identity: 0,
+    //   accountstatus: 1
+    // }) // TODO just test
     try {
       const res = await login(userInfo)
       // 登录成功

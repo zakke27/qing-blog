@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { Tabs, List, Button, Table, Space } from 'antd'
-import { getArticleAudit, getArticlePass, getArticleReject } from '../../api/admin'
+import { Tabs, List, Button, Table, Space, message, Tag } from 'antd'
+import {
+  auditArticle,
+  getArticleAudit,
+  getArticlePass,
+  getArticleReject,
+  passArticle,
+  rejectArticle
+} from '../../api/admin'
+import { Article } from '../../types/interfaces'
 
 const { TabPane } = Tabs
 const { Column } = Table
 
-const articleAuditList = [
+interface Props {
+  articleAuditList: Article[]
+  articlePassList: Article[]
+  articleRejectList: Article[]
+}
+
+/* const articleAuditList = [
   {
     articleid: 3, // 文章id
     userid: 13, // 所属用户id
@@ -85,103 +99,208 @@ const articleRejectList = [
     username: 'zhaotong' // 文章所属用户用户名
   }
 ]
+ */
+const AdminArticleControl: React.FC<Props> = ({
+  articleAuditList,
+  articlePassList,
+  articleRejectList
+}) => {
+  // const [articleAuditList, setArticleAuditList] = useState<Article[]>()
+  // const [articlePassList, setArticlePassList] = useState<Article[]>()
+  // const [articleRejectList, setArticleRejectList] = useState<Article[]>()
 
-const AdminArticleControl: React.FC = () => {
-  /*   const [articleAudit, setArticleAudit] = useState()
-  const [articlePass, setArticlePass] = useState()
-  const [articleReject, setArticleReject] = useState()
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res0 = await getArticleAudit()
+  //       // 审核中
+  //       if (res0) {
+  //         console.log(res0)
+  //         setArticleAuditList(res0.data)
+  //       }
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
+  //   fetchData()
+  // }, [articlePassList])
 
-  useEffect(() => {
-    const fetchData = async () => {
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res1 = await getArticlePass()
+  //       // 已通过
+  //       if (res1) {
+  //         console.log(res1)
+  //         setArticlePassList(res1.data)
+  //       }
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
+  //   fetchData()
+  // }, [articleAuditList])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res2 = await getArticleReject()
+  //       // 已驳回
+  //       if (res2) {
+  //         console.log(res2)
+  //         setArticleRejectList(res2.data)
+  //       }
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
+  //   fetchData()
+  // }, [])
+
+  // 通过文章
+  const adminAuditArticle = (record: Article) => {
+    return async () => {
       try {
-        const res0 = await getArticleAudit()
-        const res1 = await getArticlePass()
-        const res2 = await getArticleReject()
-        // 审核中
-        if (res0) {
-          console.log(res0)
-          setArticleAudit(res0.data)
-        }
-        // 已通过
-        if (res1) {
-          console.log(res1)
-          setArticlePass(res1.data)
-        }
-        // 已驳回
-        if (res2) {
-          console.log(res2)
-          setArticleReject(res2.data)
+        const res = await auditArticle(record.articleid)
+        if (res.data?.code === 1001) {
+          console.log(res)
+          message.success('操作成功，文章改完待审核', 2)
         }
       } catch (error) {
         console.error(error)
       }
     }
-    fetchData()
-  }) */
+  }
+  // 通过文章
+  const adminPassArticle = (record: Article) => {
+    return async () => {
+      try {
+        const res = await passArticle(record.articleid)
+        if (res.data?.code === 1003) {
+          console.log(res)
+          message.success('操作成功，文章已通过', 2)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+  // 驳回文章
+  const adminRejectArticle = (record: Article) => {
+    return async () => {
+      try {
+        const res = await rejectArticle(record.articleid)
+        if (res.data?.code === 1005) {
+          console.log(res)
+          message.success('操作成功，文章已驳回', 2)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
 
   return (
     <div>
       <Tabs type="card" tabBarGutter={27}>
-        <TabPane tab={`待审核（${articleAuditList?.length ?? 0}）`} key="1">
+        <TabPane tab={`待审核（${articleAuditList?.length}）`} key="1">
           <Table dataSource={articleAuditList} rowKey="articleid">
             <Column title="文章id" dataIndex="articleid" key="articleid" />
             <Column title="用户名" dataIndex="username" key="username" />
             <Column title="文章标题" dataIndex="articletitle" key="articletitle" />
-            <Column title="文章状态" dataIndex="articlestatus" key="articlestatus" />
+            <Column
+              title="文章状态"
+              dataIndex="articlestatus"
+              key="articlestatus"
+              render={articlestatus => (
+                <Tag color="blue" key="articlestatus">
+                  待审核
+                </Tag>
+              )}
+            />
             <Column
               title="操作"
               key="action"
               render={(text, record: any) => (
                 <Space size="middle">
-                  <Button size="small" type="primary">
-                    操作 {record.articlestatus}
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={adminPassArticle(record)}
+                  >
+                    通过文章
                   </Button>
-                  <Button size="small" type="primary" danger>
-                    驳回 {record.articlestatus}
+                  <Button
+                    size="small"
+                    type="primary"
+                    danger
+                    onClick={adminRejectArticle(record)}
+                  >
+                    驳回文章
                   </Button>
                 </Space>
               )}
             />
           </Table>
         </TabPane>
-        <TabPane tab={`已通过（${articlePassList?.length ?? 0}）`} key="2">
+        <TabPane tab={`已通过（${articlePassList?.length}）`} key="2">
           <Table dataSource={articlePassList} rowKey="articleid">
             <Column title="文章id" dataIndex="articleid" key="articleid" />
             <Column title="用户名" dataIndex="username" key="username" />
             <Column title="文章标题" dataIndex="articletitle" key="articletitle" />
-            <Column title="文章状态" dataIndex="articlestatus" key="articlestatus" />
+            <Column
+              title="文章状态"
+              dataIndex="articlestatus"
+              key="articlestatus"
+              render={articlestatus => (
+                <Tag color="blue" key="articlestatus">
+                  待审核
+                </Tag>
+              )}
+            />
             <Column
               title="操作"
               key="action"
               render={(text, record: any) => (
                 <Space size="middle">
-                  <Button size="small" type="primary">
-                    操作 {record.articlestatus}
-                  </Button>
-                  <Button size="small" type="primary" danger>
-                    驳回 {record.articlestatus}
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={adminAuditArticle(record)}
+                  >
+                    改为待审核
                   </Button>
                 </Space>
               )}
             />
           </Table>
         </TabPane>
-        <TabPane tab={`已驳回（${articleRejectList?.length ?? 0}）`} key="3">
+        <TabPane tab={`已驳回（${articleRejectList?.length}）`} key="3">
           <Table dataSource={articleRejectList} rowKey="articleid">
             <Column title="文章id" dataIndex="articleid" key="articleid" />
             <Column title="用户名" dataIndex="username" key="username" />
             <Column title="文章标题" dataIndex="articletitle" key="articletitle" />
-            <Column title="文章状态" dataIndex="articlestatus" key="articlestatus" />
+            <Column
+              title="文章状态"
+              dataIndex="articlestatus"
+              key="articlestatus"
+              render={articlestatus => (
+                <Tag color="blue" key="articlestatus">
+                  已驳回
+                </Tag>
+              )}
+            />
             <Column
               title="操作"
               key="action"
               render={(text, record: any) => (
                 <Space size="middle">
-                  <Button size="small" type="primary">
-                    操作 {record.articlestatus}
-                  </Button>
-                  <Button size="small" type="primary" danger>
-                    驳回 {record.articlestatus}
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={adminAuditArticle(record)}
+                  >
+                    改为待审核
                   </Button>
                 </Space>
               )}

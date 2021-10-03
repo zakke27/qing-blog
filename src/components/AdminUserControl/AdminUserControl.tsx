@@ -1,6 +1,6 @@
 /** @jsxImportSource  @emotion/react */
 import { css, jsx } from '@emotion/react'
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Table, Tag, Space, Button, message } from 'antd'
 import { User } from '../../types/interfaces'
 import {
@@ -13,25 +13,11 @@ const { Column } = Table
 
 type UserList = User[]
 
-const AdminUserControl: React.FC = () => {
-  const [userList, setUserList] = useState<UserList>()
+interface Props {
+  userList: UserList
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getUserList()
-        // 如果存在数据
-        if (res.data[0]?.userid) {
-          // console.log(res)
-          setUserList(res.data)
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetchData()
-  }, [userList])
-
+const AdminUserControl: React.FC<Props> = ({ userList }) => {
   // 封禁用户 HOC
   const banAccountStatus = (record: User) => {
     return async () => {
@@ -51,6 +37,7 @@ const AdminUserControl: React.FC = () => {
     }
   }
 
+  // 解禁用户
   const passAccountStatus = (record: User) => {
     return async () => {
       const { userid } = record
@@ -74,7 +61,6 @@ const AdminUserControl: React.FC = () => {
       dataSource={userList}
       rowKey="userid"
       pagination={{
-        // position: ['bottomRight'],
         pageSize: 8
       }}
     >
