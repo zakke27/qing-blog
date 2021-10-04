@@ -5,7 +5,7 @@ import { message } from 'antd'
 const axiosInstance = axios.create({
   baseURL:
     // 'https://mock.apipost.cn/app/mock/project/3abafefb-8c60-45de-ae44-e07537ba3d59/',
-    'http://192.168.43.161:8080',
+    'http://192.168.1.147:8080',
   headers: {
     'Content-Type': 'application/json'
   }

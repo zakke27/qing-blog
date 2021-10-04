@@ -1,80 +1,60 @@
-/** @jsxImportSource  @emotion/react */
-import { css } from '@emotion/react'
-import styled from '@emotion/styled'
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import { Avatar, List, message } from 'antd'
+import styled from '@emotion/styled'
+import { useLocation, useHistory } from 'react-router-dom'
+import { List, ListProps } from 'antd'
 import { LikeOutlined, MessageOutlined } from '@ant-design/icons'
+import { searchArticleList } from '../../api/article'
 import { Article } from '../../types/interfaces'
-import { getArticleList, getHotArticleList } from '../../api/article'
-import Filling from '../../components/Filing/Filling'
 
-const HomeContainer = styled.div`
+const SearchListContainer = styled.div`
   display: flex;
   flex-flow: row;
   /* background-color: lightgreen; */
-  width: 960px;
+  max-width: 700px;
 `
 const Content = styled.div`
-  flex: 3;
+  flex: 1;
   background-color: #ffffff;
-  margin-right: 1.5rem;
+  /* margin-right: 1.5rem; */
   height: 100%;
-`
-const Title = styled.h3`
-  /* background-color: #ffffff; */
-  margin: 10px;
-  /* height: 1.5rem; */
 `
 const ArticleList = styled(List)`
   margin: 10px;
   cursor: pointer;
   padding: 0 10px;
 `
-const Aside = styled.aside`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  background-color: #ffffff;
-  height: 580px;
-`
 
 type ArticleList = Article[]
 
-const Hot: React.FC = () => {
+const SearchList: React.FC = () => {
   const history = useHistory()
-  const [articleList, setArticleList] = useState<ArticleList>([])
-  const [hasMore, setHasMore] = useState<boolean>(true)
-  const [pages, setPages] = useState<number>(2)
+  const { search } = useLocation()
+  // 获取查询参数
+  const title = new URLSearchParams(search).get('title') ?? ''
+
+  const [articleList, setArticleList] = useState<ArticleList>()
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSearchData = async () => {
       try {
-        const res = await getHotArticleList() // 请求热门文章
-        if (res?.data) {
+        const res = await searchArticleList(title)
+        if (res.data) {
           console.log(res)
           setArticleList(res.data)
         }
       } catch (error) {
         console.error(error)
       }
+      fetchSearchData()
     }
-    fetchData()
-  }, [])
-
+  }, [title])
   return (
-    <HomeContainer>
+    <SearchListContainer>
       <Content>
-        <Title>热门文章</Title>
-        <hr />
-
         <ArticleList
           dataSource={articleList}
           itemLayout="vertical"
-          renderItem={(article: any) => {
+          renderItem={(article:any) => {
             return (
               <List.Item
                 key={article.articleid}
@@ -84,7 +64,7 @@ const Hot: React.FC = () => {
                 actions={[
                   <div key="author">作者：{article.username}</div>,
                   <div key="like">
-                    <LikeOutlined /> {article.articlelikecount}
+                    <LikeOutlined /> {article?.articlehot}
                   </div>
                   // <div key="comment">
                   //   <MessageOutlined /> {article}
@@ -100,9 +80,8 @@ const Hot: React.FC = () => {
           }}
         />
       </Content>
-      <Aside>热度排行</Aside>
-    </HomeContainer>
+    </SearchListContainer>
   )
 }
 
-export default Hot
+export default SearchList

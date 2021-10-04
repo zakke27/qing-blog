@@ -97,7 +97,8 @@ const Home: React.FC = () => {
           next={handleInfiniteOnLoad}
           hasMore={hasMore}
           scrollThreshold={0.97}
-          loader={<h4>Loading...</h4>}
+          // loader={<h5>loading...</h5>}
+          loader={undefined}
         >
           <ArticleList
             dataSource={articleList}

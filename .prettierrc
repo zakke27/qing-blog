@@ -2,7 +2,7 @@
   "semi": false,
   "singleQuote": true,
   "arrowParens": "avoid",
-  "printWidth": 85,
+  "printWidth": 95,
   "trailingComma": "none",
   "jsxSingleQuote": false
 }

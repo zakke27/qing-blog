@@ -6,6 +6,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import { Menu, Input, Button, Dropdown, Avatar } from 'antd'
 import { PoweroffOutlined, FileMarkdownOutlined } from '@ant-design/icons'
 import { getUser, removeAll } from '../../utils/Auth'
+import { searchArticleList } from '../../api/article'
 
 const Header = styled.header`
   position: fixed;
@@ -23,7 +24,7 @@ const Nav = styled.nav`
   align-items: center;
   /* background-color: lightgreen; //todo test */
   margin: 0 auto;
-  width: 1000px;
+  width: 1052px;
   height: 60px;
 `
 
@@ -47,7 +48,7 @@ const NavRight = styled.div`
 `
 
 const Search = styled(Input.Search)`
-  margin-left: -40px;
+  /* margin-left: -40px; */
   width: 300px;
 `
 const RoleButton = styled(Button)`
@@ -112,12 +113,23 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
           <Menu.Item key="/hot">
             <Link to="/hot">热门</Link>
           </Menu.Item>
+          <Menu.Item key="/user/follow">
+            <Link to="/user/follow">关注</Link>
+          </Menu.Item>
           <Menu.Item key="/user/liked">
             <Link to="/user/liked">我赞过的</Link>
           </Menu.Item>
         </NavLeft>
         <NavRight>
-          <Search placeholder="搜索你感兴趣的内容" size="large" allowClear />
+          <Search
+            placeholder="搜索你感兴趣的内容"
+            size="large"
+            // 模糊查询文章列表
+            onSearch={value => {
+              history.push(`/search?title=${value}`)
+            }}
+            allowClear
+          />
           {getUser()?.identity === 0 ? (
             <RoleButton onClick={goAdmin}>管理员中心</RoleButton>
           ) : (
@@ -145,8 +157,7 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
                   cursor: pointer;
                 `}
                 src={
-                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' ||
-                  null
+                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' || null
                 }
               />
             </Dropdown>

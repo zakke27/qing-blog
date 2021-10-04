@@ -1,5 +1,7 @@
+/** @jsxImportSource  @emotion/react */
+import { css, jsx } from '@emotion/react'
 import React, { useEffect, useState } from 'react'
-import { Tabs, List, Button, Table, Space, message, Tag } from 'antd'
+import { Tabs, List, Button, Table, Space, message, Tag, Modal } from 'antd'
 import {
   auditArticle,
   getArticleAudit,
@@ -9,6 +11,7 @@ import {
   rejectArticle
 } from '../../api/admin'
 import { Article } from '../../types/interfaces'
+import MDEditor from '@uiw/react-md-editor'
 
 const { TabPane } = Tabs
 const { Column } = Table
@@ -17,6 +20,7 @@ interface Props {
   articleAuditList: Article[]
   articlePassList: Article[]
   articleRejectList: Article[]
+  fetchArticleList: () => void
 }
 
 /* const articleAuditList = [
@@ -103,59 +107,11 @@ const articleRejectList = [
 const AdminArticleControl: React.FC<Props> = ({
   articleAuditList,
   articlePassList,
-  articleRejectList
+  articleRejectList,
+  fetchArticleList
 }) => {
-  // const [articleAuditList, setArticleAuditList] = useState<Article[]>()
-  // const [articlePassList, setArticlePassList] = useState<Article[]>()
-  // const [articleRejectList, setArticleRejectList] = useState<Article[]>()
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res0 = await getArticleAudit()
-  //       // 审核中
-  //       if (res0) {
-  //         console.log(res0)
-  //         setArticleAuditList(res0.data)
-  //       }
-  //     } catch (error) {
-  //       console.error(error)
-  //     }
-  //   }
-  //   fetchData()
-  // }, [articlePassList])
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res1 = await getArticlePass()
-  //       // 已通过
-  //       if (res1) {
-  //         console.log(res1)
-  //         setArticlePassList(res1.data)
-  //       }
-  //     } catch (error) {
-  //       console.error(error)
-  //     }
-  //   }
-  //   fetchData()
-  // }, [articleAuditList])
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res2 = await getArticleReject()
-  //       // 已驳回
-  //       if (res2) {
-  //         console.log(res2)
-  //         setArticleRejectList(res2.data)
-  //       }
-  //     } catch (error) {
-  //       console.error(error)
-  //     }
-  //   }
-  //   fetchData()
-  // }, [])
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [article, setArticle] = useState<Article>()
 
   // 通过文章
   const adminAuditArticle = (record: Article) => {
@@ -164,6 +120,7 @@ const AdminArticleControl: React.FC<Props> = ({
         const res = await auditArticle(record.articleid)
         if (res.data?.code === 1001) {
           console.log(res)
+          fetchArticleList()
           message.success('操作成功，文章改完待审核', 2)
         }
       } catch (error) {
@@ -178,6 +135,7 @@ const AdminArticleControl: React.FC<Props> = ({
         const res = await passArticle(record.articleid)
         if (res.data?.code === 1003) {
           console.log(res)
+          fetchArticleList()
           message.success('操作成功，文章已通过', 2)
         }
       } catch (error) {
@@ -192,6 +150,7 @@ const AdminArticleControl: React.FC<Props> = ({
         const res = await rejectArticle(record.articleid)
         if (res.data?.code === 1005) {
           console.log(res)
+          fetchArticleList()
           message.success('操作成功，文章已驳回', 2)
         }
       } catch (error) {
@@ -200,11 +159,44 @@ const AdminArticleControl: React.FC<Props> = ({
     }
   }
 
+  const handleOk = () => {
+    setIsModalVisible(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
+
   return (
     <div>
+      <Modal
+        title="审核文章"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        width={1000}
+        style={{ top: 50 }}
+      >
+        <div>
+          <h2>{article?.articletitle}</h2>
+          <MDEditor.Markdown source={article?.articlebody} />
+        </div>
+      </Modal>
       <Tabs type="card" tabBarGutter={27}>
         <TabPane tab={`待审核（${articleAuditList?.length}）`} key="1">
-          <Table dataSource={articleAuditList} rowKey="articleid">
+          <Table
+            dataSource={articleAuditList}
+            rowKey="articleid"
+            onRow={(record: any) => {
+              return {
+                onClick: event => {
+                  console.log(record)
+                  setArticle(record)
+                  setIsModalVisible(true)
+                }
+              }
+            }}
+          >
             <Column title="文章id" dataIndex="articleid" key="articleid" />
             <Column title="用户名" dataIndex="username" key="username" />
             <Column title="文章标题" dataIndex="articletitle" key="articletitle" />
@@ -223,11 +215,7 @@ const AdminArticleControl: React.FC<Props> = ({
               key="action"
               render={(text, record: any) => (
                 <Space size="middle">
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={adminPassArticle(record)}
-                  >
+                  <Button size="small" type="primary" onClick={adminPassArticle(record)}>
                     通过文章
                   </Button>
                   <Button
@@ -263,11 +251,7 @@ const AdminArticleControl: React.FC<Props> = ({
               key="action"
               render={(text, record: any) => (
                 <Space size="middle">
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={adminAuditArticle(record)}
-                  >
+                  <Button size="small" type="primary" onClick={adminAuditArticle(record)}>
                     改为待审核
                   </Button>
                 </Space>
@@ -295,11 +279,7 @@ const AdminArticleControl: React.FC<Props> = ({
               key="action"
               render={(text, record: any) => (
                 <Space size="middle">
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={adminAuditArticle(record)}
-                  >
+                  <Button size="small" type="primary" onClick={adminAuditArticle(record)}>
                     改为待审核
                   </Button>
                 </Space>

@@ -45,7 +45,7 @@ const UserCenter: React.FC = () => {
       }
     }
     fetchData()
-  }, [userArticleList])
+  }, [])
 
   const deleteUserArticle = (articleid: number) => {
     return async () => {

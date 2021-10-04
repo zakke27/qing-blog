@@ -15,9 +15,10 @@ type UserList = User[]
 
 interface Props {
   userList: UserList
+  fetchUserList: () => void
 }
 
-const AdminUserControl: React.FC<Props> = ({ userList }) => {
+const AdminUserControl: React.FC<Props> = ({ userList, fetchUserList }) => {
   // 封禁用户 HOC
   const banAccountStatus = (record: User) => {
     return async () => {
@@ -26,6 +27,7 @@ const AdminUserControl: React.FC<Props> = ({ userList }) => {
         const res = await updateAccountStatusToBan(userid)
         if (res.data?.code === 2011) {
           console.log(res)
+          fetchUserList()
           message.success('封禁成功', 2)
         }
         if (res.data?.code === 2012) {
@@ -45,6 +47,7 @@ const AdminUserControl: React.FC<Props> = ({ userList }) => {
         const res = await updateAccountStatusToPass(userid)
         if (res.data?.code === 2013) {
           console.log(res)
+          fetchUserList()
           message.success('解禁成功', 2)
         }
         if (res.data?.code === 2014) {

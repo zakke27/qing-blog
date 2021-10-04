@@ -1,4 +1,4 @@
-import { AxiosPromise } from 'axios'
+import axios, { AxiosPromise } from 'axios'
 import { NewArticleParams } from '../types/interfaces'
 import axiosInstance from '../utils/request'
 
@@ -18,14 +18,28 @@ export const getArticleList = (pages: number): AxiosPromise => {
 }
 
 /**
- * 根据每篇文章id请求文章详细信息
- * @param aid 文章id
+ * 获取热门文章列表/按文章热度降序获取所有文章
  * @returns
  */
-export const getArticleDetail = (aid: number): AxiosPromise => {
+export const getHotArticleList = () => {
   return axiosInstance({
-    url: '/article/%7B%7B$natural%7D%7D',
+    url: '/blog/getArticleByArticleHotDesc',
     method: 'get'
+  })
+}
+
+/**
+ * 根据文章id请求文章详细信息
+ * @param articleid 文章id
+ * @returns
+ */
+export const getArticleDetail = (articleid: number): AxiosPromise => {
+  return axiosInstance({
+    url: '/blog/getOneArticle',
+    method: 'post',
+    data: {
+      articleid
+    }
   })
 }
 
@@ -96,12 +110,25 @@ export const deleteArticle = (articleid: number): AxiosPromise => {
  * @param articleid 文章id
  * @returns
  */
-export const getComment = (articleid: number) => {
+export const getCommentList = (articleid: number) => {
   return axiosInstance({
     url: '/user/selectCommentByArticleId',
     method: 'post',
     data: {
       articleid
     }
+  })
+}
+
+/**
+ * 模糊查询文章列表
+ * @param title 模糊查询字段参数
+ * @returns
+ */
+export const searchArticleList = (title: string) => {
+  return axiosInstance({
+    url: '/blog/getArticle',
+    method: 'get',
+    params: title
   })
 }

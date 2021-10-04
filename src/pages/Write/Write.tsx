@@ -58,9 +58,9 @@ const Write: React.FC = () => {
       if (res.data.code === 7001) {
         console.log(res)
         message.success('文章上传成功，审核中', 2)
-        setTimeout(() => {
-          history.push('/')
-        }, 2000)
+        // setTimeout(() => {
+        //   history.push('/')
+        // }, 2000)
       }
     } catch (error) {
       console.error(error)

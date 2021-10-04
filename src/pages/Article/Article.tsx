@@ -1,28 +1,35 @@
 /** @jsxImportSource  @emotion/react */
 import { css, jsx } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
 import {
   cancelArticleLike,
   getArticleDetail,
+  getCommentList,
   saveArticleLike
 } from '../../api/article'
-import { getUserLiked } from '../../api/user'
+import { addComment, getUserLiked } from '../../api/user'
 import { getUser } from '../../utils/Auth'
-import { Divider } from 'antd'
 import {
-  LikeFilled,
-  LikeOutlined,
-  CommentOutlined,
-  WarningOutlined
-} from '@ant-design/icons'
+  Divider,
+  List,
+  Comment as AntdComment,
+  Avatar,
+  Form,
+  Input,
+  Button,
+  message
+} from 'antd'
+import { LikeFilled, LikeOutlined, CommentOutlined, WarningOutlined } from '@ant-design/icons'
+import { ArticleDetail, Comment, NewComment } from '../../types/interfaces'
+import useScrollToTop from '../../hooks/useScrollToTop'
 
 const ArticleContainer = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: lightgreen;
+  /* background-color: lightgreen; */
   width: 960px;
   /* height: 800px; */
 `
@@ -65,24 +72,8 @@ const IconDiv = styled.div`
     border-color: #1890ff;
   }
 `
-
 interface RouteParams {
   id: string
-}
-
-interface ArticleDetail {
-  id?: number
-  author: string
-  avatar: string
-  title: string
-  content: string
-  likeCount: number | 0
-  comments: {
-    id: number
-    author: string
-    content: string
-    replyDate: string
-  }[]
 }
 
 interface Props {
@@ -92,39 +83,56 @@ interface Props {
 const Article: React.FC<Props> = ({ showModal }) => {
   const { id } = useParams<RouteParams>()
   const articleId = parseInt(id, 10)
-
   const [articleDetail, setArticleDetail] = useState<ArticleDetail | null>(null)
   const [isLiked, setIsLiked] = useState<boolean>(false)
+  const [commentList, setCommentList] = useState<Comment[]>([])
+  const [commentValue, setCommentValue] = useState('')
 
+  useScrollToTop()
+
+  // 根据文章id请求文章详细信息
   useEffect(() => {
-    // 根据文章id请求文章详细信息
-    const fetchData = async () => {
+    const fetchArticleDetail = async () => {
       try {
         const res = await getArticleDetail(articleId)
         if (res) {
           console.log(res)
-          // setArticleDetail(res.data.data)
+          setArticleDetail(res.data)
         }
       } catch (error) {
-       console.error(error)
+        console.error(error)
       }
     }
-    fetchData()
+    fetchArticleDetail()
     // 根据用户id请求用户点赞过的文章列表
-    if (getUser()) {
-      getUserLiked(getUser().userid)
-        .then(res => {
-          // console.log('getUserLikedById', res)
-          if (res.data.code === 200) {
-            const temp: boolean = res.data.data.includes(articleId)
-            setIsLiked(temp)
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
+    // if (getUser()) {
+    //   getUserLiked(getUser().userid)
+    //     .then(res => {
+    //       // console.log('getUserLikedById', res)
+    //       if (res.data.code === 200) {
+    //         const temp: boolean = res.data.data.includes(articleId)
+    //         setIsLiked(temp)
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    // }
   }, [articleId])
+
+  const fetchCommentList = useCallback(async () => {
+    try {
+      const res = await getCommentList(articleId)
+      if (res?.data) {
+        console.log(res)
+        setCommentList(res.data)
+      }
+    } catch (error) {}
+  }, [articleId])
+
+  useEffect(() => {
+    fetchCommentList() // 根据文章id请求文章评论列表
+  }, [fetchCommentList])
 
   // 点赞与取消点赞
   const likeArticle = async () => {
@@ -162,6 +170,34 @@ const Article: React.FC<Props> = ({ showModal }) => {
     }
   }
 
+  // 发表评论
+  const publishComment = async () => {
+    if (!getUser()?.userid) {
+      showModal()
+    }
+    // console.log({ commentValue })
+    const newComment: NewComment = {
+      userid: getUser()?.userid,
+      username: getUser()?.username,
+      articleid: articleId,
+      commentbody: commentValue
+    }
+    console.log({ newComment })
+    try {
+      const res = await addComment(newComment)
+      if (res.data.code === 3001) {
+        console.log(res)
+        fetchCommentList()
+        message.success('评论成功', 2)
+      }
+      if (res.data.code === 3002) {
+        message.error('评论失败', 2)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   // 锚点跳转
   const scrollToAnchor = (anchorName: string) => {
     if (anchorName) {
@@ -192,7 +228,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
           >
             {isLiked ? <LikeFilled /> : <LikeOutlined />}
           </IconDiv>
-          <div>{articleDetail?.likeCount}</div>
+          {/* <div>{articleDetail?.likeCount}</div> */}
         </div>
         <div
           className="comment"
@@ -205,7 +241,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
           <IconDiv>
             <CommentOutlined />
           </IconDiv>
-          <div>{articleDetail?.comments.length}</div>
+          <div>{commentList?.length}</div>
         </div>
         <div className="report">
           <IconDiv>
@@ -216,16 +252,69 @@ const Article: React.FC<Props> = ({ showModal }) => {
       <Content>
         {!!articleDetail && (
           <div>
-            <h1>{articleDetail.title}</h1>
-            <div>作者：{articleDetail.author}</div>
+            <h1>{articleDetail.articletitle}</h1>
+            {!(getUser()?.userid === articleDetail?.userid) && (
+              <Button
+                css={css`
+                  float: right;
+                `}
+              >
+                关注
+              </Button>
+            )}
+            <div>作者：{articleDetail.username}</div>
             <br />
-            <MDEditor.Markdown source={articleDetail.content} />
+            <MDEditor.Markdown source={articleDetail.articlebody} />
             <br />
           </div>
         )}
+        <div>
+          <AntdComment
+            avatar={
+              <Avatar
+                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                alt="Han Solo"
+              />
+            }
+            content={
+              <>
+                <Form.Item>
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="输入评论（Enter换行）"
+                    onChange={e => setCommentValue(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  css={css`
+                    float: right;
+                  `}
+                >
+                  <Button htmlType="submit" type="primary" onClick={publishComment}>
+                    发表评论
+                  </Button>
+                </Form.Item>
+              </>
+            }
+          />
+        </div>
         <Divider />
         <div>
-          <h3 id="comment">全部评论 （{articleDetail?.comments.length}）</h3>
+          <h3 id="comment">全部评论（{commentList?.length}）</h3>
+          <List
+            className="comment-list"
+            dataSource={commentList}
+            renderItem={(comment: Comment) => (
+              <li>
+                <AntdComment
+                  author={comment.username}
+                  avatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                  content={comment.commentbody}
+                />
+                <Divider />
+              </li>
+            )}
+          />
         </div>
       </Content>
       <Aside>施工中🚧</Aside>

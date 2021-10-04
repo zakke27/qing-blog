@@ -1,6 +1,6 @@
 import { AxiosPromise } from 'axios'
 import axiosInstance from '../utils/request'
-import { LoginParams } from '../types/interfaces'
+import { LoginParams, NewComment, NewFollow } from '../types/interfaces'
 
 type RegisterParams = LoginParams
 
@@ -37,5 +37,59 @@ export const getPersonalArticles = (userid: number): AxiosPromise => {
     url: '/user/selectArticle',
     method: 'post',
     data: { userid }
+  })
+}
+
+/**
+ * 新增评论
+ * @param newComment 新建评论内容对象信息
+ * @returns
+ */
+export const addComment = (newComment: NewComment) => {
+  return axiosInstance({
+    url: '/user/addComment',
+    method: 'post',
+    data: newComment
+  })
+}
+
+/**
+ * 获取当前用户的已关注列表
+ * @param userid 用户id
+ * @returns
+ */
+export const getFollowUserList = (userid: number) => {
+  return axiosInstance({
+    url: '/user/getFriendList',
+    method: 'post',
+    data: {
+      userid
+    }
+  })
+}
+
+/**
+ * 关注用户
+ * @param newFollow 关注参数对象
+ * @returns 
+ */
+export const followUser = (newFollow: NewFollow) => {
+  return axiosInstance({
+    url: '/user/getFriendList',
+    method: 'post',
+    data: newFollow
+  })
+}
+
+/**
+ * 取消关注用户
+ * @param newFollow 关注参数对象
+ * @returns 
+ */
+export const unFollowUser = (newFollow: NewFollow) => {
+  return axiosInstance({
+    url: '/user/getFriendList',
+    method: 'post',
+    data: newFollow
   })
 }

@@ -14,6 +14,8 @@ import UserCenter from './pages/UserCenter/UserCenter'
 import NotFound from './components/404/NotFound'
 import Admin from './pages/Admin/Admin'
 import AuthRoute from './routes/AuthRoute'
+import SearchList from './pages/SearchList/SearchList'
+import Follow from './pages/Follow/Follow'
 
 const AppContainer = styled.div`
   display: flex;
@@ -55,11 +57,17 @@ const App: React.FC = () => {
           <Route exact path="/">
             <Home />
           </Route>
+          <Route path="/search">
+            <SearchList />
+          </Route>
           <Route path="/hot">
             <Hot />
           </Route>
           <AuthRoute path="/user/liked" roles={[0, 1]}>
             <Liked />
+          </AuthRoute>
+          <AuthRoute path="/user/follow" roles={[0, 1]}>
+            <Follow />
           </AuthRoute>
           <AuthRoute path="/user/write" roles={[0, 1]}>
             <Write />

@@ -18,14 +18,22 @@ interface Article {
   articleid: number // 文章id
   userid: number // 文章作者id
   username: string // 文章作者用户名
-  avatar?: string // 文章作者头像URL
   articletitle: string // 文章标题
   articlebody: string // 文章内容
   articletag: string // 文章标签
   articlestatus: 0 | 1 | 2 // 文章状态  【0代表审核中，1代表通过，2代表不通过】
   articlehot: number // 文章热度
-  articlelikecount?: number // 文章点赞数
-  comments?: number
+}
+
+interface ArticleDetail {
+  articleid: number
+  userid: number
+  articletitle: string
+  articlebody: string
+  articletag: null | string
+  articlestatus: 1 // 文章状态
+  articlehot: number // 文章热度
+  username: string
 }
 
 // 新增文章参数
@@ -37,13 +45,35 @@ interface NewArticleParams {
   articlestatus: 0
 }
 
-
 // 评论
 interface Comment {
   commentid: number
   userid: number
+  username: string
   articleid: number
   commentbody: string
 }
 
-export type { LoginParams, User, Article, NewArticleParams, Comment }
+interface NewComment {
+  userid: number
+  username: string
+  articleid: number
+  commentbody: string
+}
+
+interface NewFollow {
+  userid: number // 用户id
+  friendid: number // 被关注用户的id
+  username: string // 好友的用户名
+}
+
+export type {
+  LoginParams,
+  User,
+  Article,
+  ArticleDetail,
+  NewArticleParams,
+  Comment,
+  NewComment,
+  NewFollow
+}
