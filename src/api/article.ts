@@ -1,5 +1,5 @@
 import axios, { AxiosPromise } from 'axios'
-import { NewArticleParams } from '../types/interfaces'
+import { NewArticleParams, UpdateArticleParams } from '../types/interfaces'
 import axiosInstance from '../utils/request'
 
 /**
@@ -45,34 +45,34 @@ export const getArticleDetail = (articleid: number): AxiosPromise => {
 
 /**
  * 用户给文章点赞
- * @param aid 文章id
- * @param uid 用户id
+ * @param userid 用户id
+ * @param articleid 文章id
  * @returns
  */
-export const saveArticleLike = (aid: number, uid: number): AxiosPromise => {
+export const saveArticleLike = (userid: number, articleid: number): AxiosPromise => {
   return axiosInstance({
-    url: '/article/save',
+    url: '/article/like',
     method: 'post',
-    params: {
-      aid,
-      uid
+    data: {
+      userid,
+      articleid
     }
   })
 }
 
 /**
  * 用户取消点赞
- * @param aid 文章id
- * @param uid 用户id
+ * @param userid 用户id
+ * @param articleid 文章id
  * @returns
  */
-export const cancelArticleLike = (aid: number, uid: number): AxiosPromise => {
+export const cancelArticleLike = (userid: number, articleid: number): AxiosPromise => {
   return axiosInstance({
-    url: '/article/cancel',
+    url: '/article/dislike',
     method: 'post',
-    params: {
-      aid,
-      uid
+    data: {
+      userid,
+      articleid
     }
   })
 }
@@ -85,6 +85,19 @@ export const cancelArticleLike = (aid: number, uid: number): AxiosPromise => {
 export const addArticle = (newArticle: NewArticleParams): AxiosPromise => {
   return axiosInstance({
     url: '/user/addArticle',
+    method: 'post',
+    data: newArticle
+  })
+}
+
+/**
+ * 用户编辑文章
+ * @param  newArticle 待更新文章对象
+ * @returns
+ */
+export const updateArticle = (newArticle: UpdateArticleParams): AxiosPromise => {
+  return axiosInstance({
+    url: '/user/updateArticleByArticleId',
     method: 'post',
     data: newArticle
   })
@@ -127,8 +140,7 @@ export const getCommentList = (articleid: number) => {
  */
 export const searchArticleList = (title: string) => {
   return axiosInstance({
-    url: '/blog/getArticle',
-    method: 'get',
-    params: title
+    url: `/blog/getArticle?title=${title}`,
+    method: 'get'
   })
 }

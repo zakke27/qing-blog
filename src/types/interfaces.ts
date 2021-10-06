@@ -44,6 +44,12 @@ interface NewArticleParams {
   articlebody: string
   articlestatus: 0
 }
+interface UpdateArticleParams {
+  articleid: number
+  articletitle: string
+  articlebody: string
+  articletag?: string
+}
 
 // 评论
 interface Comment {
@@ -66,14 +72,19 @@ interface NewFollow {
   friendid: number // 被关注用户的id
   username: string // 好友的用户名
 }
-
+interface NewUnFollow {
+  userid: number // 用户id
+  friendid: number // 被关注用户的id
+}
 export type {
   LoginParams,
   User,
   Article,
   ArticleDetail,
   NewArticleParams,
+  UpdateArticleParams,
   Comment,
   NewComment,
-  NewFollow
+  NewFollow,
+  NewUnFollow
 }

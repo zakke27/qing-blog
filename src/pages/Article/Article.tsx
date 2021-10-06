@@ -10,7 +10,13 @@ import {
   getCommentList,
   saveArticleLike
 } from '../../api/article'
-import { addComment, getUserLiked } from '../../api/user'
+import {
+  addComment,
+  followUser,
+  getFollowUserList,
+  getUserLiked,
+  unFollowUser
+} from '../../api/user'
 import { getUser } from '../../utils/Auth'
 import {
   Divider,
@@ -23,7 +29,13 @@ import {
   message
 } from 'antd'
 import { LikeFilled, LikeOutlined, CommentOutlined, WarningOutlined } from '@ant-design/icons'
-import { ArticleDetail, Comment, NewComment } from '../../types/interfaces'
+import {
+  ArticleDetail,
+  Comment,
+  NewComment,
+  NewFollow,
+  NewUnFollow
+} from '../../types/interfaces'
 import useScrollToTop from '../../hooks/useScrollToTop'
 
 const ArticleContainer = styled.div`
@@ -49,6 +61,7 @@ const Content = styled.article`
   background: #ffffff;
   margin-right: 1.5rem;
   padding: 10px;
+  padding-top: 20px;
 `
 const Aside = styled.aside`
   flex: 1;
@@ -83,8 +96,10 @@ interface Props {
 const Article: React.FC<Props> = ({ showModal }) => {
   const { id } = useParams<RouteParams>()
   const articleId = parseInt(id, 10)
-  const [articleDetail, setArticleDetail] = useState<ArticleDetail | null>(null)
+  const userId = getUser()?.userid
+  const [articleDetail, setArticleDetail] = useState<ArticleDetail>()
   const [isLiked, setIsLiked] = useState<boolean>(false)
+  const [isFollow, setIsFollow] = useState<boolean>(false)
   const [commentList, setCommentList] = useState<Comment[]>([])
   const [commentValue, setCommentValue] = useState('')
 
@@ -104,21 +119,45 @@ const Article: React.FC<Props> = ({ showModal }) => {
       }
     }
     fetchArticleDetail()
-    // 根据用户id请求用户点赞过的文章列表
-    // if (getUser()) {
-    //   getUserLiked(getUser().userid)
-    //     .then(res => {
-    //       // console.log('getUserLikedById', res)
-    //       if (res.data.code === 200) {
-    //         const temp: boolean = res.data.data.includes(articleId)
-    //         setIsLiked(temp)
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.log(err)
-    //     })
-    // }
   }, [articleId])
+
+  // 查询用户已赞列表
+  useEffect(() => {
+    const fetchUserLiked = async () => {
+      try {
+        if (getUser()?.userid) {
+          const res = await getUserLiked(getUser()?.userid)
+          if (res.data) {
+            console.log(res)
+            const temp = res.data.some((item: any) => articleId === item.articleid)
+            console.log(temp)
+            setIsLiked(temp)
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchUserLiked()
+  }, [articleId, userId])
+
+  // 查询关注列表
+  useEffect(() => {
+    const fetchFollowList = async () => {
+      try {
+        const res = await getFollowUserList(getUser()?.userid)
+        if (res.data) {
+          console.log(res)
+          const temp = res.data.some((item: any) => articleDetail?.userid === item.friendid)
+          console.log('getFollowUserList', temp)
+          setIsFollow(temp)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchFollowList()
+  }, [articleDetail?.userid, userId])
 
   const fetchCommentList = useCallback(async () => {
     try {
@@ -137,32 +176,39 @@ const Article: React.FC<Props> = ({ showModal }) => {
   // 点赞与取消点赞
   const likeArticle = async () => {
     // FIXME
-    if (getUser() && articleDetail) {
+    if (getUser()?.userid && articleDetail) {
       if (!isLiked) {
         // 点赞
-        const res = await saveArticleLike(articleId, getUser().userid).catch(err =>
-          console.log(err)
-        )
-        if (res?.data.code === 200) {
-          console.log(res)
-          setIsLiked(true)
+        try {
+          const res = await saveArticleLike(userId, articleId)
+          if (res.data.code === 501) {
+            console.log(res)
+            setIsLiked(true)
+            setArticleDetail({
+              ...articleDetail,
+              articlehot: articleDetail?.articlehot + 1
+            })
+            // message.success('点赞成功', 2)
+          }
+        } catch (error) {
+          console.error(error)
         }
-        // setArticleDetail({
-        //   ...articleDetail,
-        //   likeCount: articleDetail?.likeCount + 1
-        // })
       } else {
         // 取消点赞
-        const res = await cancelArticleLike(articleId, getUser().userid)
-        if (res.data.code === 200) {
-          console.log(res)
-          setIsLiked(false)
+        try {
+          const res = await cancelArticleLike(userId, articleId)
+          if (res.data.code === 601) {
+            console.log(res)
+            setIsLiked(false)
+            setArticleDetail({
+              ...articleDetail,
+              articlehot: articleDetail?.articlehot - 1
+            })
+            // message.success('取消点赞成功', 2)
+          }
+        } catch (error) {
+          console.error(error)
         }
-        // setIsLiked(false)
-        // setArticleDetail({
-        //   ...articleDetail,
-        //   likeCount: articleDetail?.likeCount - 1
-        // })
       }
     } else {
       // 未登录则弹出登录框
@@ -174,6 +220,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
   const publishComment = async () => {
     if (!getUser()?.userid) {
       showModal()
+      return
     }
     // console.log({ commentValue })
     const newComment: NewComment = {
@@ -192,6 +239,54 @@ const Article: React.FC<Props> = ({ showModal }) => {
       }
       if (res.data.code === 3002) {
         message.error('评论失败', 2)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // 关注
+  const handleFollow = async () => {
+    if (!getUser()?.userid) {
+      showModal()
+      return
+    }
+    const newFollow: NewFollow = {
+      userid: getUser()?.userid,
+      friendid: articleDetail?.userid as number,
+      username: articleDetail?.username as string
+    }
+    try {
+      const res = await followUser(newFollow)
+      if (res) {
+        console.log(res)
+      }
+      if (res.data.code === 202) {
+        console.log({ res })
+        setIsFollow(true)
+        message.success('关注成功', 2)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // 取消关注
+  const handleUnFollow = async () => {
+    if (!getUser()?.userid) {
+      showModal()
+      return
+    }
+    const newUnFollow: NewUnFollow = {
+      userid: getUser()?.userid as number,
+      friendid: articleDetail?.userid as number
+    }
+    try {
+      const res = await unFollowUser(newUnFollow)
+      if (res.data.code === 301) {
+        console.log({ res })
+        setIsFollow(false)
+        message.success('取消关注成功', 2)
       }
     } catch (error) {
       console.error(error)
@@ -228,7 +323,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
           >
             {isLiked ? <LikeFilled /> : <LikeOutlined />}
           </IconDiv>
-          {/* <div>{articleDetail?.likeCount}</div> */}
+          <div>{articleDetail?.articlehot}</div>
         </div>
         <div
           className="comment"
@@ -252,70 +347,91 @@ const Article: React.FC<Props> = ({ showModal }) => {
       <Content>
         {!!articleDetail && (
           <div>
-            <h1>{articleDetail.articletitle}</h1>
-            {!(getUser()?.userid === articleDetail?.userid) && (
-              <Button
-                css={css`
-                  float: right;
-                `}
-              >
-                关注
-              </Button>
-            )}
-            <div>作者：{articleDetail.username}</div>
+            <div>
+              <span>作者：{articleDetail.username}</span>
+              {getUser()?.userid === articleDetail?.userid ? null : (
+                <Button
+                  onClick={isFollow ? handleUnFollow : handleFollow}
+                  css={css`
+                    float: right;
+                  `}
+                >
+                  {isFollow ? '已关注' : '关注'}
+                </Button>
+              )}
+            </div>
+
+            <h1
+              css={css`
+                font-size: 2rem;
+              `}
+            >
+              {articleDetail.articletitle}
+            </h1>
+
             <br />
             <MDEditor.Markdown source={articleDetail.articlebody} />
             <br />
           </div>
         )}
-        <div>
-          <AntdComment
-            avatar={
-              <Avatar
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                alt="Han Solo"
-              />
-            }
-            content={
-              <>
-                <Form.Item>
-                  <Input.TextArea
-                    rows={4}
-                    placeholder="输入评论（Enter换行）"
-                    onChange={e => setCommentValue(e.target.value)}
+        {!!articleDetail && (
+          <>
+            <div>
+              <AntdComment
+                avatar={
+                  <Avatar
+                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                    alt="Han Solo"
                   />
-                </Form.Item>
-                <Form.Item
-                  css={css`
-                    float: right;
-                  `}
-                >
-                  <Button htmlType="submit" type="primary" onClick={publishComment}>
-                    发表评论
-                  </Button>
-                </Form.Item>
-              </>
-            }
-          />
-        </div>
-        <Divider />
-        <div>
-          <h3 id="comment">全部评论（{commentList?.length}）</h3>
-          <List
-            className="comment-list"
-            dataSource={commentList}
-            renderItem={(comment: Comment) => (
-              <li>
-                <AntdComment
-                  author={comment.username}
-                  avatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  content={comment.commentbody}
-                />
-                <Divider />
-              </li>
-            )}
-          />
-        </div>
+                }
+                content={
+                  <>
+                    <Form.Item>
+                      <Input.TextArea
+                        rows={4}
+                        placeholder="输入评论（Enter换行）"
+                        onChange={e => setCommentValue(e.target.value)}
+                        disabled={!getUser()?.userid}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      css={css`
+                        float: right;
+                      `}
+                    >
+                      <Button
+                        htmlType="submit"
+                        type="primary"
+                        onClick={publishComment}
+                        disabled={!getUser()?.userid}
+                      >
+                        发表评论
+                      </Button>
+                    </Form.Item>
+                  </>
+                }
+              />
+            </div>
+            <Divider />
+            <div>
+              <h3 id="comment">全部评论（{commentList?.length}）</h3>
+              <List
+                className="comment-list"
+                dataSource={commentList}
+                renderItem={(comment: Comment) => (
+                  <li>
+                    <AntdComment
+                      author={comment.username}
+                      avatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      content={comment.commentbody}
+                    />
+                    <Divider />
+                  </li>
+                )}
+              />
+            </div>
+          </>
+        )}
       </Content>
       <Aside>施工中🚧</Aside>
     </ArticleContainer>

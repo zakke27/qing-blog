@@ -33,12 +33,12 @@ const ArticleList = styled(List)`
   padding: 0 10px;
 `
 const Aside = styled.aside`
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   flex: 1;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   height: 580px;
 `
 
@@ -64,6 +64,28 @@ const Hot: React.FC = () => {
     }
     fetchData()
   }, [])
+  const getTimeState = () => {
+    // 获取当前时间
+    let timeNow = new Date()
+    // 获取当前小时
+    let hours = timeNow.getHours()
+    // 设置默认文字
+    let text = ``
+    // 判断当前时间段
+    if (hours >= 0 && hours <= 10) {
+      text = `早上好`
+    } else if (hours > 10 && hours <= 14) {
+      text = `中午好`
+    } else if (hours > 14 && hours <= 18) {
+      text = `下午好`
+    } else if (hours > 18 && hours <= 24) {
+      text = `晚上好`
+    }
+    console.log(`hours >>>>>`, hours)
+    console.log(`text >>>>`, text)
+    // 返回当前时间段对应的状态
+    return text
+  }
 
   return (
     <HomeContainer>
@@ -84,11 +106,11 @@ const Hot: React.FC = () => {
                 actions={[
                   <div key="author">作者：{article.username}</div>,
                   <div key="like">
-                    <LikeOutlined /> {article.articlelikecount}
+                    <LikeOutlined /> {article.articlehot}
+                  </div>,
+                  <div key="comment">
+                    <MessageOutlined />
                   </div>
-                  // <div key="comment">
-                  //   <MessageOutlined /> {article}
-                  // </div>
                 ]}
               >
                 <List.Item.Meta
@@ -100,7 +122,79 @@ const Hot: React.FC = () => {
           }}
         />
       </Content>
-      <Aside>热度排行</Aside>
+      <Aside>
+        <div
+          css={css`
+            background-color: #fff;
+            height: 6rem;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          <span
+            css={css`
+              line-height: 6rem;
+              margin-left: 10px;
+              font-size: 27px;
+            `}
+          >
+            {getTimeState()}🎉🎉🎉
+          </span>
+        </div>
+        <div
+          css={css`
+            background-color: #fff;
+            margin-top: 15px;
+            height: 20rem;
+            padding: 10px;
+          `}
+        >
+          <h4>网站推荐</h4>
+          <ul
+            css={css`
+              & li {
+                list-style: none;
+                margin: 20px;
+              }
+            `}
+          >
+            <li>
+              <a href="https://juejin.cn/">掘金 - 代码不止，掘金不停</a>
+            </li>
+            <li>
+              <a href="https://segmentfault.com/">SegmentFault 思否</a>
+            </li>
+            <li>
+              <a href="https://www.jianshu.com/">简书 - 创作你的创作</a>
+            </li>
+            <li>
+              <a href="https://gitee.com/">Gitee - 基于 Git 的代码托管和研发协作平台</a>
+            </li>
+          </ul>
+        </div>
+        <div
+          css={css`
+            background-color: #fff;
+            margin-top: 15px;
+            height: 6rem;
+            padding: 10px;
+          `}
+        >
+          <h4>本站源码地址</h4>
+          <a
+            css={css`
+              margin: 20px;
+            `}
+            href="https://github.com/zakke27/qing-blog"
+          >
+            Github
+          </a>
+          <br />
+        </div>
+      </Aside>
     </HomeContainer>
   )
 }

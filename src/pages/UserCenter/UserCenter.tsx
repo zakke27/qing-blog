@@ -9,7 +9,7 @@ import UserSidebar from '../../components/UserSidebar/UserSidebar'
 import UserProfile from '../../components/UserProfile/UserProfile'
 
 import { getPersonalArticles } from '../../api/user'
-import { deleteArticle } from '../../api/article'
+import {deleteArticle} from '../../api/article'
 
 import { getUser } from '../../utils/Auth'
 import AuthRoute from '../../routes/AuthRoute'
@@ -31,28 +31,37 @@ const Main = styled.main`
 const UserCenter: React.FC = () => {
   const [userArticleList, setUserArticleList] = useState<any>([]) // HACK bad
 
-  useEffect(() => {
-    // 请求用户个人文章列表
-    const fetchData = async () => {
-      try {
-        const res = await getPersonalArticles(getUser()?.userid)
-        if (res.data[0]?.articleid) {
-          // console.log(res)
-          setUserArticleList(res.data)
-        }
-      } catch (error) {
-        console.error(error)
+  // 请求用户个人文章列表
+  const fetchUserArticleList = async () => {
+    try {
+      const res = await getPersonalArticles(getUser()?.userid)
+      if (res.data[0]?.articleid) {
+        // console.log(res)
+        setUserArticleList(res.data)
       }
+    } catch (error) {
+      console.error(error)
     }
-    fetchData()
+  }
+  useEffect(() => {
+    fetchUserArticleList()
   }, [])
 
+  // 用户编辑文章
+  const editUserArticle = () => {
+    return async () => {
+      
+    }
+  }
+
+  // 用户删除文章
   const deleteUserArticle = (articleid: number) => {
     return async () => {
       try {
         const res = await deleteArticle(articleid)
         if (res.data.code === 7003) {
           console.log(res)
+          fetchUserArticleList()
           message.success('删除文章成功', 2)
         }
       } catch (error) {
@@ -60,6 +69,7 @@ const UserCenter: React.FC = () => {
       }
     }
   }
+
   return (
     <UserCenterContainer>
       <UserSidebar />

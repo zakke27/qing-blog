@@ -21,6 +21,7 @@ import {
   getUserList
 } from '../../api/admin'
 import { User, Article } from '../../types/interfaces'
+import AdminDashboard from '../../components/AdminDashboard/AdminDashboard'
 
 const { Header, Sider, Content } = Layout
 
@@ -34,7 +35,7 @@ const Sidebar = styled(Sider)`
 `
 
 const LogoBox = styled.div`
-  height: 32px;
+  height: 31px;
   margin: 16px;
   background: rgba(255, 255, 255, 0.3);
 `
@@ -133,8 +134,13 @@ const Admin: React.FC = () => {
           }}
           css={css`
             cursor: pointer;
+            text-align: center;
+            color: #ffffff;
+            overflow: hidden;
           `}
-        />
+        >
+          返回 主页
+        </LogoBox>
         <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]}>
           <Menu.Item key="/admin" icon={<HomeOutlined />}>
             <Link to="/admin">首页</Link>
@@ -157,7 +163,7 @@ const Admin: React.FC = () => {
         <ContentBox>
           <Switch>
             <AuthRoute exact path="/admin" roles={[0]}>
-              <h2>管理员首页</h2>
+              <AdminDashboard/>
             </AuthRoute>
             <AuthRoute path="/admin/user-control" roles={[0]}>
               <AdminUserControl userList={userList} fetchUserList={fetchUserList} />

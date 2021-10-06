@@ -17,11 +17,14 @@ specifiers:
   antd: ^4.16.13
   assert: ^2.0.0
   axios: ^0.21.4
+  echarts: ^5.2.1
+  echarts-for-react: ^3.0.1
   eslint: ^7.32.0
   eslint-config-alloy: ^4.3.0
   eslint-plugin-react: ^7.26.0
   eslint-plugin-react-hooks: ^4.2.0
   js-cookie: ^3.0.1
+  lodash: ^4.17.21
   prettier: ^2.4.1
   process: ^0.11.10
   qs: ^6.10.1
@@ -40,7 +43,10 @@ dependencies:
   '@uiw/react-md-editor': 3.6.4_3b7f7b84f013384d046f72a4522eddf8
   antd: 4.16.13_react-dom@17.0.2+react@17.0.2
   axios: 0.21.4
+  echarts: 5.2.1
+  echarts-for-react: 3.0.1_echarts@5.2.1+react@17.0.2
   js-cookie: 3.0.1
+  lodash: mirrors.tencent.com/lodash/4.17.21
   qs: 6.10.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -1257,6 +1263,25 @@ packages:
 
   /dom-align/1.12.2:
     resolution: {integrity: sha512-pHuazgqrsTFrGU2WLDdXxCFabkdQDx72ddkraZNih1KsMcN5qsRSTR9O4VJRlwTPCPb5COYg3LOfiMHHcPInHg==}
+    dev: false
+
+  /echarts-for-react/3.0.1_echarts@5.2.1+react@17.0.2:
+    resolution: {integrity: sha512-9LNcPNT+DH+IwtZlahuXQf7zqCWSnnYqITXtKgLDzoQ7fvotH1xEaFPriASQb+jYqSI9pBdtN5cFneT89wECUg==}
+    peerDependencies:
+      echarts: ^3.0.0 || ^4.0.0 || ^5.0.0
+      react: ^15.0.0 || >=16.0.0
+    dependencies:
+      echarts: 5.2.1
+      fast-deep-equal: mirrors.tencent.com/fast-deep-equal/3.1.3
+      react: 17.0.2
+      size-sensor: 1.0.1
+    dev: false
+
+  /echarts/5.2.1:
+    resolution: {integrity: sha512-OJ79b22eqRfbSV8vYmDKmA+XWfNbr0Uk/OafWcFNIGDWti2Uw9A6eVCiJLmqPa9Sk+EWL+t5v26aak0z3gxiZw==}
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.2.1
     dev: false
 
   /electron-to-chromium/1.3.850:
@@ -3622,6 +3647,10 @@ packages:
       get-intrinsic: 1.1.1
       object-inspect: 1.11.0
 
+  /size-sensor/1.0.1:
+    resolution: {integrity: sha512-QTy7MnuugCFXIedXRpUSk9gUnyNiaxIdxGfUjr8xxXOqIB3QvBUYP9+b51oCg2C4dnhaeNk/h57TxjbvoJrJUA==}
+    dev: false
+
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -3790,6 +3819,10 @@ packages:
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
+
+  /tslib/2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+    dev: false
 
   /tsutils/3.21.0_typescript@4.4.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -4037,6 +4070,24 @@ packages:
     engines: {node: '>= 6'}
     dev: false
 
+  /zrender/5.2.1:
+    resolution: {integrity: sha512-M3bPGZuyLTNBC6LiNKXJwSCtglMp8XUEqEBG+2MdICDI3d1s500Y4P0CzldQGsqpRVB7fkvf3BKQQRxsEaTlsw==}
+    dependencies:
+      tslib: 2.3.0
+    dev: false
+
   /zwitch/2.0.2:
     resolution: {integrity: sha512-JZxotl7SxAJH0j7dN4pxsTV6ZLXoLdGME+PsjkL/DaBrVryK9kTGq06GfKrwcSOqypP+fdXGoCHE36b99fWVoA==}
+    dev: false
+
+  mirrors.tencent.com/fast-deep-equal/3.1.3:
+    resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz}
+    name: fast-deep-equal
+    version: 3.1.3
+    dev: false
+
+  mirrors.tencent.com/lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/lodash/-/lodash-4.17.21.tgz}
+    name: lodash
+    version: 4.17.21
     dev: false

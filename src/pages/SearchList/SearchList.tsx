@@ -31,30 +31,31 @@ const SearchList: React.FC = () => {
   const { search } = useLocation()
   // 获取查询参数
   const title = new URLSearchParams(search).get('title') ?? ''
-
+  console.log(title)
   const [articleList, setArticleList] = useState<ArticleList>()
 
   useEffect(() => {
     const fetchSearchData = async () => {
       try {
         const res = await searchArticleList(title)
-        if (res.data) {
+        if (res) {
           console.log(res)
           setArticleList(res.data)
         }
       } catch (error) {
         console.error(error)
       }
-      fetchSearchData()
     }
+    fetchSearchData()
   }, [title])
+
   return (
     <SearchListContainer>
       <Content>
         <ArticleList
           dataSource={articleList}
           itemLayout="vertical"
-          renderItem={(article:any) => {
+          renderItem={(article: any) => {
             return (
               <List.Item
                 key={article.articleid}

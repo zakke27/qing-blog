@@ -1,6 +1,6 @@
 import { AxiosPromise } from 'axios'
 import axiosInstance from '../utils/request'
-import { LoginParams, NewComment, NewFollow } from '../types/interfaces'
+import { LoginParams, NewComment, NewFollow,NewUnFollow } from '../types/interfaces'
 
 type RegisterParams = LoginParams
 
@@ -22,12 +22,18 @@ export const register = (data: RegisterParams): AxiosPromise => {
   })
 }
 
-// 根据用户id查询已赞文章id数组
-export const getUserLiked = (data: number): AxiosPromise => {
+/**
+ * 获取用户已赞文章列表
+ * @param userid 用户id
+ * @returns 
+ */
+export const getUserLiked = (userid: number): AxiosPromise => {
   return axiosInstance({
-    url: '/user/liked',
+    url: '/user/getLikeArticle',
     method: 'post',
-    data
+    data:{
+      userid
+    }
   })
 }
 
@@ -75,7 +81,7 @@ export const getFollowUserList = (userid: number) => {
  */
 export const followUser = (newFollow: NewFollow) => {
   return axiosInstance({
-    url: '/user/getFriendList',
+    url: '/user/addFriend',
     method: 'post',
     data: newFollow
   })
@@ -86,10 +92,10 @@ export const followUser = (newFollow: NewFollow) => {
  * @param newFollow 关注参数对象
  * @returns 
  */
-export const unFollowUser = (newFollow: NewFollow) => {
+export const unFollowUser = (newUnFollow: NewUnFollow) => {
   return axiosInstance({
-    url: '/user/getFriendList',
+    url: '/user/deleteFriend',
     method: 'post',
-    data: newFollow
+    data: newUnFollow
   })
 }

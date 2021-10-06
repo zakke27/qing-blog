@@ -1,6 +1,7 @@
 import React from 'react'
-import { Tabs, List, Button } from 'antd'
+import { Tabs, List, Button, Popconfirm } from 'antd'
 import { Article } from '../../types/interfaces'
+import { Link } from 'react-router-dom'
 
 const { TabPane } = Tabs
 
@@ -9,12 +10,7 @@ interface Props {
   deleteUserArticle: (articleid: number) => any // HACK bad
 }
 
-const UserArticleControl: React.FC<Props> = ({
-  userArticleList,
-  deleteUserArticle
-}) => {
-  console.log(userArticleList)
-
+const UserArticleControl: React.FC<Props> = ({ userArticleList, deleteUserArticle }) => {
   return (
     <div>
       <Tabs>
@@ -25,15 +21,26 @@ const UserArticleControl: React.FC<Props> = ({
             renderItem={(article: Article) => (
               <List.Item
                 actions={[
-                  <a key="list-loadmore-edit">编辑</a>,
-                  <Button
-                    type="text"
-                    danger
-                    key="list-delete"
-                    onClick={deleteUserArticle(article.articleid)}
+                  <Link
+                    key="list-loadmore-edit"
+                    to={{
+                      pathname: '/user/write',
+                      state: { article }
+                    }}
                   >
-                    删除
-                  </Button>
+                    编辑
+                  </Link>,
+                  <Popconfirm
+                    title="确定删除吗？此操作不可逆！"
+                    onConfirm={deleteUserArticle(article.articleid)}
+                    okText="Yes"
+                    cancelText="No"
+                    key="list-delete"
+                  >
+                    <Button type="text" danger>
+                      删除
+                    </Button>
+                  </Popconfirm>
                 ]}
               >
                 <List.Item.Meta title={article.articletitle} />
@@ -43,9 +50,8 @@ const UserArticleControl: React.FC<Props> = ({
         </TabPane>
         <TabPane
           tab={`审核中（${
-            userArticleList?.filter(
-              (article: Article) => article.articlestatus === 0
-            ).length ?? 0
+            userArticleList?.filter((article: Article) => article.articlestatus === 0)
+              .length ?? 0
           }）`}
           key="2"
         >
@@ -57,10 +63,26 @@ const UserArticleControl: React.FC<Props> = ({
             renderItem={(article: Article) => (
               <List.Item
                 actions={[
-                  <a key="list-loadmore-edit">编辑</a>,
-                  <Button type="text" danger key="list-delete">
-                    删除
-                  </Button>
+                  <Link
+                    key="list-loadmore-edit"
+                    to={{
+                      pathname: '/user/write',
+                      state: { article }
+                    }}
+                  >
+                    编辑
+                  </Link>,
+                  <Popconfirm
+                    title="确定删除吗？此操作不可逆！"
+                    onConfirm={deleteUserArticle(article.articleid)}
+                    okText="Yes"
+                    cancelText="No"
+                    key="list-delete"
+                  >
+                    <Button type="text" danger>
+                      删除
+                    </Button>
+                  </Popconfirm>
                 ]}
               >
                 <List.Item.Meta title={article.articletitle} />
@@ -70,9 +92,8 @@ const UserArticleControl: React.FC<Props> = ({
         </TabPane>
         <TabPane
           tab={`已通过（${
-            userArticleList?.filter(
-              (article: Article) => article.articlestatus === 1
-            ).length ?? 0
+            userArticleList?.filter((article: Article) => article.articlestatus === 1)
+              .length ?? 0
           }）`}
           key="3"
         >
@@ -84,10 +105,26 @@ const UserArticleControl: React.FC<Props> = ({
             renderItem={(article: Article) => (
               <List.Item
                 actions={[
-                  <a key="list-loadmore-edit">编辑</a>,
-                  <Button type="text" danger key="list-delete">
-                    删除
-                  </Button>
+                  <Link
+                    key="list-loadmore-edit"
+                    to={{
+                      pathname: '/user/write',
+                      state: { article }
+                    }}
+                  >
+                    编辑
+                  </Link>,
+                  <Popconfirm
+                    title="确定删除吗？此操作不可逆！"
+                    onConfirm={deleteUserArticle(article.articleid)}
+                    okText="Yes"
+                    cancelText="No"
+                    key="list-delete"
+                  >
+                    <Button type="text" danger>
+                      删除
+                    </Button>
+                  </Popconfirm>
                 ]}
               >
                 <List.Item.Meta title={article.articletitle} />
@@ -97,9 +134,8 @@ const UserArticleControl: React.FC<Props> = ({
         </TabPane>
         <TabPane
           tab={`未通过（${
-            userArticleList?.filter(
-              (article: Article) => article.articlestatus === 2
-            ).length ?? 0
+            userArticleList?.filter((article: Article) => article.articlestatus === 2)
+              .length ?? 0
           }）`}
           key="4"
         >
@@ -111,10 +147,26 @@ const UserArticleControl: React.FC<Props> = ({
             renderItem={(article: Article) => (
               <List.Item
                 actions={[
-                  <a key="list-loadmore-edit">编辑</a>,
-                  <Button type="text" danger key="list-delete">
-                    删除
-                  </Button>
+                  <Link
+                    key="list-loadmore-edit"
+                    to={{
+                      pathname: '/user/write',
+                      state: { article }
+                    }}
+                  >
+                    编辑
+                  </Link>,
+                  <Popconfirm
+                    title="确定删除吗？此操作不可逆！"
+                    onConfirm={deleteUserArticle(article.articleid)}
+                    okText="Yes"
+                    cancelText="No"
+                    key="list-delete"
+                  >
+                    <Button type="text" danger>
+                      删除
+                    </Button>
+                  </Popconfirm>
                 ]}
               >
                 <List.Item.Meta title={article.articletitle} />
