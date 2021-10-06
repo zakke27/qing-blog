@@ -118,6 +118,9 @@ const AdminArticleControl: React.FC<Props> = ({
           <Table
             dataSource={articleAuditList}
             rowKey="articleid"
+            pagination={{
+              pageSize: 7
+            }}
             onRow={(record: any) => {
               return {
                 onClick: event => {
@@ -141,29 +144,16 @@ const AdminArticleControl: React.FC<Props> = ({
                 </Tag>
               )}
             />
-            <Column
-              title="操作"
-              key="action"
-              render={(text, record: any) => (
-                <Space size="middle">
-                  {/* <Button size="small" type="primary" onClick={adminPassArticle(record)}>
-                    通过文章
-                  </Button>
-                  <Button
-                    size="small"
-                    type="primary"
-                    danger
-                    onClick={adminRejectArticle(record)}
-                  >
-                    驳回文章
-                  </Button> */}
-                </Space>
-              )}
-            />
           </Table>
         </TabPane>
         <TabPane tab={`已通过（${articlePassList?.length}）`} key="2">
-          <Table dataSource={articlePassList} rowKey="articleid">
+          <Table
+            dataSource={articlePassList}
+            rowKey="articleid"
+            pagination={{
+              pageSize: 7
+            }}
+          >
             <Column title="文章id" dataIndex="articleid" key="articleid" />
             <Column title="用户名" dataIndex="username" key="username" />
             <Column title="文章标题" dataIndex="articletitle" key="articletitle" />
@@ -191,7 +181,13 @@ const AdminArticleControl: React.FC<Props> = ({
           </Table>
         </TabPane>
         <TabPane tab={`已驳回（${articleRejectList?.length}）`} key="3">
-          <Table dataSource={articleRejectList} rowKey="articleid">
+          <Table
+            dataSource={articleRejectList}
+            rowKey="articleid"
+            pagination={{
+              pageSize: 7
+            }}
+          >
             <Column title="文章id" dataIndex="articleid" key="articleid" />
             <Column title="用户名" dataIndex="username" key="username" />
             <Column title="文章标题" dataIndex="articletitle" key="articletitle" />

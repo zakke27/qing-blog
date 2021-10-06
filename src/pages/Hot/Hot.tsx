@@ -92,7 +92,6 @@ const Hot: React.FC = () => {
       <Content>
         <Title>热门文章</Title>
         <hr />
-
         <ArticleList
           dataSource={articleList}
           itemLayout="vertical"
@@ -113,10 +112,13 @@ const Hot: React.FC = () => {
                   </div>
                 ]}
               >
-                <List.Item.Meta
-                  // avatar={<Avatar src={article.avatar} />}
-                  title={article.articletitle}
-                />
+                <h3
+                  css={css`
+                    font-weight: bold;
+                  `}
+                >
+                  {article.articletitle}
+                </h3>
               </List.Item>
             )
           }}

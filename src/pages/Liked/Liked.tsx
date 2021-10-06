@@ -53,7 +53,7 @@ const Liked: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getUserLiked(getUser()?.userid) // 请求热门文章
+        const res = await getUserLiked(getUser()?.userid)
         if (res?.data) {
           console.log(res)
           let tempArr = []

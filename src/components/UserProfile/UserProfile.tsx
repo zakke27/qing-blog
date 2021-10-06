@@ -1,16 +1,23 @@
 /** @jsxImportSource  @emotion/react */
 import { css, jsx } from '@emotion/react'
 import styled from '@emotion/styled'
-import React from 'react'
-import { Form, Input, Button, message, Divider, Upload, Avatar } from 'antd'
+import React, { useEffect } from 'react'
+import { Form, Input, Button, message, Divider, Upload, Avatar, Radio } from 'antd'
 import { getUser } from '../../utils/Auth'
-
+import { UserProfileParams } from '../../types/interfaces'
+import { getProfile, updateProfile } from '../../api/user'
 const ProfileContainer = styled.div`
   display: flex;
   flex-direction: row;
 `
 
+interface UserInfo extends UserProfileParams {
+  portrait?: null
+}
+
 const UserProfile: React.FC = () => {
+  const [form] = Form.useForm()
+
   const beforeUpload = (file: { type: string; size: number }) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
     if (!isJpgOrPng) {
@@ -23,6 +30,43 @@ const UserProfile: React.FC = () => {
     return isJpgOrPng && isLt2M
   }
 
+  const fetchUserProfile = async () => {
+    try {
+      const res = await getProfile(getUser()?.userid)
+      if (res?.data) {
+        console.log(res)
+        form.setFieldsValue(res.data)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchUserProfile()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const updateUserProfile = async (user: UserProfileParams) => {
+    console.log(user)
+    const temp = {
+      userid: getUser()?.userid,
+      name: user.name ?? '',
+      age: Number(user.age) ?? 18,
+      sex: user.sex ?? '男',
+      introduction: user.introduction ?? ''
+    }
+    try {
+      const res = await updateProfile(temp)
+      if (res?.data.code === 2007) {
+        console.log(res)
+        message.success('个人资料修改成功', 2)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <ProfileContainer>
       <div
@@ -33,10 +77,12 @@ const UserProfile: React.FC = () => {
         <h3>个人资料</h3>
         <Divider />
         <Form
+          onFinish={updateUserProfile}
           labelAlign="left"
           colon={false}
           labelCol={{ offset: 1, span: 3 }}
           wrapperCol={{ offset: 1, span: 15 }}
+          form={form}
           css={css`
             padding: 0 20px;
           `}
@@ -45,12 +91,33 @@ const UserProfile: React.FC = () => {
             label="用户名"
             name="username"
             initialValue={getUser()?.username ?? ''}
+            required
           >
             <Input disabled />
           </Form.Item>
           <Divider />
-          <Form.Item label="个人介绍" name="introduction">
-            <Input.TextArea showCount maxLength={100} placeholder="填写个人介绍" />
+          <Form.Item label="昵称" name="name" required>
+            <Input />
+          </Form.Item>
+          <Divider />
+          <Form.Item label="性别" name="sex" required>
+            <Radio.Group>
+              <Radio value="男">男</Radio>
+              <Radio value="女">女</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Divider />
+          <Form.Item label="年龄" name="age" required>
+            <Input type="number" />
+          </Form.Item>
+          <Divider />
+          <Form.Item label="个人介绍" name="introduction" required>
+            <Input.TextArea
+              showCount
+              maxLength={100}
+              // value={userInfo?.introduction}
+              placeholder="填写个人介绍"
+            />
           </Form.Item>
           <Divider />
           <Form.Item
@@ -59,14 +126,15 @@ const UserProfile: React.FC = () => {
               margin-top: 2rem;
             `}
           >
-            <Button type="primary">保存修改</Button>
+            <Button type="primary" htmlType="submit">
+              保存修改
+            </Button>
           </Form.Item>
         </Form>
       </div>
       <div
         css={css`
           flex: 1;
-          /* background-color: lightgreen; */
           margin: 2rem;
           display: flex;
           flex-direction: column;

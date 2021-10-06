@@ -76,6 +76,15 @@ interface NewUnFollow {
   userid: number // 用户id
   friendid: number // 被关注用户的id
 }
+
+interface UserProfileParams {
+  userid:number // 用户id
+  name: string // 用户昵称
+  age: number // 年龄
+  sex: string // 性别
+  introduction: string // 个人介绍
+}
+
 export type {
   LoginParams,
   User,
@@ -86,5 +95,6 @@ export type {
   Comment,
   NewComment,
   NewFollow,
-  NewUnFollow
+  NewUnFollow,
+  UserProfileParams
 }

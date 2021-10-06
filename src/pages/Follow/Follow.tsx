@@ -73,6 +73,9 @@ const Follow: React.FC = () => {
           renderItem={item => (
             <List.Item>
               <List.Item.Meta
+                css={css`
+                  padding: 5px;
+                `}
                 avatar={
                   <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                 }

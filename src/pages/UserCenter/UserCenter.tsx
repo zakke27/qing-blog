@@ -9,12 +9,13 @@ import UserSidebar from '../../components/UserSidebar/UserSidebar'
 import UserProfile from '../../components/UserProfile/UserProfile'
 
 import { getPersonalArticles } from '../../api/user'
-import {deleteArticle} from '../../api/article'
+import { deleteArticle } from '../../api/article'
 
 import { getUser } from '../../utils/Auth'
 import AuthRoute from '../../routes/AuthRoute'
 import { Article } from '../../types/interfaces'
 import { message } from 'antd'
+import useTitle from '../../hooks/useTitle'
 
 const UserCenterContainer = styled.div`
   /* background-color: #ffffff; */
@@ -30,6 +31,8 @@ const Main = styled.main`
 
 const UserCenter: React.FC = () => {
   const [userArticleList, setUserArticleList] = useState<any>([]) // HACK bad
+
+  useTitle('用户中心')
 
   // 请求用户个人文章列表
   const fetchUserArticleList = async () => {
@@ -49,9 +52,7 @@ const UserCenter: React.FC = () => {
 
   // 用户编辑文章
   const editUserArticle = () => {
-    return async () => {
-      
-    }
+    return async () => {}
   }
 
   // 用户删除文章

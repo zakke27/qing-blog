@@ -4,9 +4,8 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { Menu, Input, Button, Dropdown, Avatar } from 'antd'
-import { PoweroffOutlined, FileMarkdownOutlined } from '@ant-design/icons'
+import { PoweroffOutlined, FileMarkdownOutlined, UserOutlined } from '@ant-design/icons'
 import { getUser, removeAll } from '../../utils/Auth'
-import { searchArticleList } from '../../api/article'
 
 const Header = styled.header`
   position: fixed;
@@ -144,6 +143,12 @@ const NavBar: React.FC<Props> = ({ showModal }) => {
               trigger={['click']}
               overlay={
                 <Menu>
+                  <Menu.Item key="0">
+                    <Link to="/user">
+                      <UserOutlined />
+                      <span> 个人中心</span>
+                    </Link>
+                  </Menu.Item>
                   <Menu.Item key="1" onClick={logout}>
                     <PoweroffOutlined />
                     <span> 退出</span>

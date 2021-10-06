@@ -22,6 +22,7 @@ import {
 } from '../../api/admin'
 import { User, Article } from '../../types/interfaces'
 import AdminDashboard from '../../components/AdminDashboard/AdminDashboard'
+import useTitle from '../../hooks/useTitle'
 
 const { Header, Sider, Content } = Layout
 
@@ -72,6 +73,8 @@ const Admin: React.FC = () => {
   const [articleAuditList, setArticleAuditList] = useState<Article[]>([])
   const [articlePassList, setArticlePassList] = useState<Article[]>([])
   const [articleRejectList, setArticleRejectList] = useState<Article[]>([])
+
+  useTitle('管理员中心')
 
   const fetchUserList = async () => {
     try {
@@ -163,7 +166,7 @@ const Admin: React.FC = () => {
         <ContentBox>
           <Switch>
             <AuthRoute exact path="/admin" roles={[0]}>
-              <AdminDashboard/>
+              <AdminDashboard />
             </AuthRoute>
             <AuthRoute path="/admin/user-control" roles={[0]}>
               <AdminUserControl userList={userList} fetchUserList={fetchUserList} />

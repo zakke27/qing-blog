@@ -64,8 +64,10 @@ const Content = styled.article`
   padding-top: 20px;
 `
 const Aside = styled.aside`
+  /* display: flex; */
+  flex-direction: column;
   flex: 1;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   height: 80vh;
 `
 const IconDiv = styled.div`
@@ -236,6 +238,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
         console.log(res)
         fetchCommentList()
         message.success('评论成功', 2)
+        setCommentValue('')
       }
       if (res.data.code === 3002) {
         message.error('评论失败', 2)
@@ -302,7 +305,28 @@ const Article: React.FC<Props> = ({ showModal }) => {
       }
     }
   }
-
+  const getTimeState = () => {
+    // 获取当前时间
+    let timeNow = new Date()
+    // 获取当前小时
+    let hours = timeNow.getHours()
+    // 设置默认文字
+    let text = ``
+    // 判断当前时间段
+    if (hours >= 0 && hours <= 10) {
+      text = `早上好`
+    } else if (hours > 10 && hours <= 14) {
+      text = `中午好`
+    } else if (hours > 14 && hours <= 18) {
+      text = `下午好`
+    } else if (hours > 18 && hours <= 24) {
+      text = `晚上好`
+    }
+    console.log(`hours >>>>>`, hours)
+    console.log(`text >>>>`, text)
+    // 返回当前时间段对应的状态
+    return text
+  }
   return (
     <ArticleContainer>
       <Toolbar>
@@ -361,15 +385,13 @@ const Article: React.FC<Props> = ({ showModal }) => {
               )}
             </div>
 
-            <h1
+            <h4
               css={css`
                 font-size: 2rem;
               `}
             >
               {articleDetail.articletitle}
-            </h1>
-
-            <br />
+            </h4>
             <MDEditor.Markdown source={articleDetail.articlebody} />
             <br />
           </div>
@@ -390,6 +412,7 @@ const Article: React.FC<Props> = ({ showModal }) => {
                       <Input.TextArea
                         rows={4}
                         placeholder="输入评论（Enter换行）"
+                        value={commentValue}
                         onChange={e => setCommentValue(e.target.value)}
                         disabled={!getUser()?.userid}
                       />
@@ -433,7 +456,79 @@ const Article: React.FC<Props> = ({ showModal }) => {
           </>
         )}
       </Content>
-      <Aside>施工中🚧</Aside>
+      <Aside>
+        <div
+          css={css`
+            background-color: #fff;
+            height: 6rem;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          <span
+            css={css`
+              line-height: 6rem;
+              margin-left: 10px;
+              font-size: 27px;
+            `}
+          >
+            {getTimeState()}🎉🎉🎉
+          </span>
+        </div>
+        <div
+          css={css`
+            background-color: #fff;
+            margin-top: 15px;
+            height: 20rem;
+            padding: 10px;
+          `}
+        >
+          <h4>网站推荐</h4>
+          <ul
+            css={css`
+              & li {
+                list-style: none;
+                margin: 20px;
+              }
+            `}
+          >
+            <li>
+              <a href="https://juejin.cn/">掘金 - 代码不止，掘金不停</a>
+            </li>
+            <li>
+              <a href="https://segmentfault.com/">SegmentFault 思否</a>
+            </li>
+            <li>
+              <a href="https://www.jianshu.com/">简书 - 创作你的创作</a>
+            </li>
+            <li>
+              <a href="https://gitee.com/">Gitee - 基于 Git 的代码托管和研发协作平台</a>
+            </li>
+          </ul>
+        </div>
+        <div
+          css={css`
+            background-color: #fff;
+            margin-top: 15px;
+            height: 6rem;
+            padding: 10px;
+          `}
+        >
+          <h4>本站源码地址</h4>
+          <a
+            css={css`
+              margin: 20px;
+            `}
+            href="https://github.com/zakke27/qing-blog"
+          >
+            Github
+          </a>
+          <br />
+        </div>
+      </Aside>
     </ArticleContainer>
   )
 }
