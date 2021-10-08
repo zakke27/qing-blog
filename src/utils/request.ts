@@ -3,7 +3,7 @@ import { message } from 'antd'
 
 // 设置拦截器
 const axiosInstance = axios.create({
-  baseURL: 'http://zakke,xyz:8080', // 这里使用后端的接口
+  baseURL: 'http://zakke.xyz:8080', // 这里使用后端的接口
   // 'http://192.168.43.161:8080',
   // 'http://192.168.1.147:8080',
   headers: {
