@@ -19,8 +19,7 @@ const TextBox = styled.a`
   margin: 0px 0px 0px 5px;
   color: #939393;
   font-size: 15px;
-  border: 1px solid red;
-  border-radius: 50%;
+
   &:hover {
     color: #1890ff;
   }
